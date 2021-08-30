@@ -108,9 +108,26 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
         callbacks: {
           onImageUpload: function(files, editor, welEditable) {
             sendFile(files[0], editor, welEditable);
+          },
+          onMediaDelete: function(target) {
+            deleteFile(target[0].src);
           }
         }
       });
+
+      function deleteFile(src) {
+        $.ajax({
+          data: {
+            src: src
+          },
+          type: "POST",
+          url: "../ajax/d_img.php",
+          cache: false,
+          success: function(resp) {
+            console.log(resp);
+          }
+        });
+      }
 
       function sendFile(file, editor, welEditable) {
         var data = new FormData();
