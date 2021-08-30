@@ -1,6 +1,9 @@
 <!-- head -->
 <?php include "sections/header.php" ?>
 <!-- head -->
+<!-- db -->
+<?php include "ajax/db.php" ?>
+<!-- ./db -->
 
 <main>
 
@@ -21,93 +24,86 @@
         <div class="posts">
           <div class="row">
 
-            <div class="col-md-4">
-              <div class="image">
-                <a href="javascript:void(0)">
-                  <img src="img/test2.png" alt="">
-                </a>
-              </div>
-              <div class="category">
-                <a href="javascript:void(0)">Internet</a>
-              </div>
-              <div class="title">
-                <a href="javascript:void(0)">Lorem ipsum dolor sit amet conse adipising elit</a>
-              </div>
-              <p class="text">
-                Lorem ipsum dolor sit amet coetur adipisicing elit. Odit, sapiene reendus ipsam culpa vitae soluta reiciendis accusamus! Magni.
-              </p>
-              <span class="_a">
-                By
-                <a href="javascript:void(0)" class="author">Ammar Ahmad</a>
-              </span>
-              <span class="date">11 Aug, 2021</span>
-            </div>
+            <?php
+            $results_per_page = 10;
+            $query = "SELECT * FROM posts ORDER BY post_date DESC";
+            $result = mysqli_query($connection, $query);
+            $number_of_result = mysqli_num_rows($result);
 
-            <div class="col-md-4">
-              <div class="image">
-                <a href="javascript:void(0)">
-                  <img src="img/test.png" alt="">
-                </a>
-              </div>
-              <div class="category">
-                <a href="javascript:void(0)">Internet</a>
-              </div>
-              <div class="title">
-                <a href="javascript:void(0)">Lorem ipsum dolor sit amet conse adipising elit</a>
-              </div>
-              <p class="text">
-                Lorem ipsum dolor sit amet coetur adipisicing elit. Odit, sapiene reendus ipsam culpa vitae soluta
-              </p>
-              <span class="_a">
-                By
-                <a href="javascript:void(0)" class="author">Ammar Ahmad</a>
-              </span>
-              <span class="date">11 Aug, 2021</span>
-            </div>
+            $number_of_page = ceil($number_of_result / $results_per_page);
+            if (!isset($_GET['page'])) {
+              $page = 1;
+            } else {
+              $page = $_GET['page'];
+            }
 
-            <div class="col-md-4">
-              <div class="image">
-                <a href="javascript:void(0)">
-                  <img src="img/test3.png" alt="">
-                </a>
-              </div>
-              <div class="category">
-                <a href="javascript:void(0)">Internet</a>
-              </div>
-              <div class="title">
-                <a href="javascript:void(0)">Lorem ipsum dolor sit amet conse adipising elit</a>
-              </div>
-              <p class="text">
-                Lorem ipsum dolor sit amet coetur adipisicing elit. Odit, sapiene reendus ipsam culpa vitae soluta reiciendis accusamus! Magni.
-              </p>
-              <span class="_a">
-                By
-                <a href="javascript:void(0)" class="author">Ammar Ahmad</a>
-              </span>
-              <span class="date">11 Aug, 2021</span>
-            </div>
+            $page_first_result = ($page - 1) * $results_per_page;
 
-            <div class="col-md-4">
-              <div class="image">
-                <a href="javascript:void(0)">
-                  <img src="img/test4.png" alt="">
-                </a>
+            $query = "SELECT * FROM posts ORDER BY post_date DESC LIMIT " . $page_first_result . ',' . $results_per_page;
+            $result = mysqli_query($connection, $query);
+
+            function getTagValue($string, $tag)
+            {
+              $pattern = "/<{$tag}>(.*?)<\/{$tag}>/s";
+              preg_match($pattern, $string, $matches);
+              return isset($matches[1]) ? $matches[1] : '';
+            }
+
+            while ($row = mysqli_fetch_assoc($result)) :
+            ?>
+
+              <div class="col-md-4">
+                <div class="image">
+                  <?php
+                  $url = strtolower(str_replace(" ", "-", $row['post_title']));
+                  ?>
+                  <a href="blog.php?post=<?php echo $url ?>">
+                    <?php
+                    $img = explode("../", $row['post_feature_image']);
+                    ?>
+                    <img src="<?php echo $img[1]; ?>" alt="<?php echo $img[1]; ?>">
+                  </a>
+                </div>
+                <div class="category">
+                  <?php
+                  $query = "SELECT cat_name FROM categories WHERE categories.cat_id=" . $row['post_categoryID'] . "";
+                  $catg = mysqli_fetch_assoc(mysqli_query($connection, $query));
+                  $cat_url = strtolower(str_replace(" ", "-", $catg['cat_name']));
+                  ?>
+
+                  <a href="categories.php?category=<?php echo $cat_url ?>"><?php echo $catg['cat_name'] ?></a>
+                </div>
+                <div class="title">
+                  <a href="blog.php?post=<?php echo $url ?>"><?php echo $row['post_title'] ?></a>
+                </div>
+
+                <p class="text">
+                  <?php
+                  $p = getTagValue($row['post_content'], "p");
+
+                  if (strlen($p) > 130) {
+                    echo substr(trim(html_entity_decode($p)), 0, 130) . "...";
+                  } else {
+                    echo trim(html_entity_decode($p));
+                  }
+                  ?>
+                </p>
+
+                <?php
+                $query = "SELECT name,userkey FROM users WHERE users.userkey='" . $row['post_author'] . "' LIMIT 1";
+                $authir_result = mysqli_query($connection, $query);
+                $author = mysqli_fetch_assoc($authir_result);
+                $author_url = strtolower(str_replace(" ", "-", $author['name']));
+                ?>
+
+                <span class="_a">
+                  By
+                  <a href="author.php?k=<?php echo $author['userkey'] ?>&author=<?php echo $author_url ?>" class="author"><?php echo $author['name']; ?></a>
+                </span>
+                <span class="date"><?php echo date("F jS, Y", strtotime($row['post_date'])) ?></span>
               </div>
-              <div class="category">
-                <a href="javascript:void(0)">Internet</a>
-              </div>
-              <div class="title">
-                <a href="javascript:void(0)">Lorem ipsum dolor sit amet conse adipising elit</a>
-              </div>
-              <p class="text">
-                Lorem ipsum dolor sit amet coetur adipisicing elit. Odit, sapiene reendus ipsam culpa vitae soluta reiciendis accusamus! Magni.
-              </p>
-              <span class="_a">
-                By
-                <a href="javascript:void(0)" class="author">Ammar Ahmad</a>
-              </span>
-              <span class="date">11 Aug, 2021</span>
-            </div>
+
+            <?php endwhile; ?>
 
           </div>
         </div>
@@ -120,15 +116,18 @@
               <div class="col-md-12">
                 <div>
                   <ul>
-                    <!-- <li><a href="#">&lt;</a></li> -->
-                    <li><a href="#" class="active">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">6</a></li>
-                    <li><a href="#">7</a></li>
-                    <!-- <li><a href="#">&gt;</a></li> -->
+
+                    <?php
+                    for ($i = 1; $i <= $number_of_page; $i++) {
+                      if ($page == $i) {
+                        echo '<li><a href="posts.php?page=' . $i . '" class="active">' . $i . '</a></li>';
+                      } else {
+                        echo '<li><a href="posts.php?page=' . $i . '">' . $i . '</a></li>';
+                      }
+                    }
+
+                    ?>
+
                   </ul>
                 </div>
               </div>

@@ -228,6 +228,7 @@ header {
   display: inline-block;
   text-transform: uppercase;
   font-weight: 700;
+  font-size: 14px;
 }
 
 .category a:hover {
@@ -983,6 +984,11 @@ footer .cp span a {
 
 /* comments */
 
+.pagination {
+  margin-top: 25px;
+  border-top: var(--blog-border-bottom);
+}
+
 .comments_section, .pagination {
   padding-top: 40px;
   padding-bottom: 40px;
@@ -1272,7 +1278,8 @@ footer .cp span a {
 
 .posts .col-md-4 .text {
   margin-bottom: 3px;
-  color: rgb(73, 73, 73);
+  color: rgb(136 136 136);
+  font-size: 14px;
 }
 
 /* ./categories */

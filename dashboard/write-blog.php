@@ -150,7 +150,8 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
               if (alt != null) {
                 var image = $('<img>').attr({
                   'src': url,
-                  'alt': alt
+                  'alt': alt,
+                  'title': alt
                 });
                 $('#summernote').summernote("insertNode", image[0]);
               }
