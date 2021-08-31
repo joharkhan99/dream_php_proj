@@ -21,28 +21,26 @@
     <?php
     include "ajax/functions.php";
 
-    if (isset($_GET['i'])) {
+    if (isset($_GET['i']) && !empty($_GET['i'])) {
 
       $p_id = sanitize($_GET['i']);
       $query = mysqli_query($connection, "SELECT * FROM posts INNER JOIN categories ON posts.post_categoryID=categories.cat_id INNER JOIN users ON posts.post_author=users.userkey WHERE posts.id='$p_id'");
       $row = mysqli_fetch_assoc($query);
-      print_r($row);
+      // print_r($row);
+
+      $cat_url = strtolower(str_replace(" ", "-", $row['cat_name']));
+      $author_url = strtolower(str_replace(" ", "-", $row['name']));
     ?>
 
       <div class="blog_category">
-        <a href="javascript:void(0)">
-          <div>Space</div>
+        <a href="categories.php?category=<?php echo $cat_url ?>">
+          <div><?php echo strtoupper($row['cat_name']) ?></div>
         </a>
       </div>
 
       <div class="blog_heading">
-        <h1>Astronauts Give Us a Delightful Look at What the Olympics Would Be Like in
-          Space
-        </h1>
-        <h2 class="tagline">
-          The unofficial Space Olympics featured four events: “lack-of-floor routine,” “no-handball,” “synchronized
-          space swimming,” and “weightless sharpshooting.”
-        </h2>
+        <h1><?php echo ucwords($row['post_title']) ?></h1>
+        <h2 class="tagline"><?php echo $row['post_tag'] ?></h2>
       </div>
 
       <div class="row body">
@@ -50,12 +48,18 @@
         <div class="col-md-9 blog_content">
 
           <div class="bio">
-            <span class="author">By <a href="javascript:void(0)">Ammar Khan</a></span>
-            <span class="date">7/19/21 9:01PM</span>
+            <span class="author">By <a href="author.php?k=<?php echo substr($row['userkey'], 0, 5) ?>&author=<?php echo $author_url ?>"><?php echo ucwords($row['name']) ?></a></span>
+            <span class="date"><?php echo date("m/d/y", strtotime($row['post_date'])) . " at " . date("g:i A", strtotime($row['post_date'])) ?></span>
             <a class="comment_link" href="#comments_section">Comments (12)</a>
-            <a href="javascript:void(0)" class="share_btn">
+
+            <?php
+            $url_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            ?>
+            <button type="button" class="ccb">
+              <input type="text" style="visibility: hidden;width:0;visibility: hidden;padding: 0;margin: 0;height: 0;" value="<?php echo $url_link; ?>" id="url_link">
               <span class="share" title="Share"><i class="fas fa-share-alt"></i></span><span class="text">Share</span>
-            </a>
+            </button>
+
           </div>
 
           <div class="main-content">
@@ -63,8 +67,8 @@
               <div class="col-md-12">
                 <div class="feature-image">
                   <figure>
-                    <img src="img/test.png" alt="">
-                    <figcaption>Fig.1 - Trulli, Puglia, Italy.</figcaption>
+                    <img src="<?php echo explode("../", $row['post_feature_image'])[1] ?>" alt="">
+                    <!-- <figcaption>Fig.1 - Trulli, Puglia, Italy.</figcaption> -->
                   </figure>
                 </div>
               </div>
@@ -72,33 +76,29 @@
 
             <div class="row body_content">
               <div class="col-md-12">
-                <p>
-                  Add “extreme heat” to the growing list of plagues facing this year’s Summer Olympics, an event I’m
-                  <a href="javascript:void(0)">
-                    starting
-                  </a>
-                  to suspect I would very much not enjoy participating in, even if they asked nicely.
-                </p>
-                <p>
-                  According to the <a href="javascript:void(0)">Washington Post</a>, in addition to being derailed by a
-                  global pandemic that forced a
-                  full year’s postponement as well as a ban on all spectators, this year’s Summer Games are also set to
-                  be roiled by devastating July temperatures in Tokyo that have some officials worried for the safety of
-                  the competing athletes.
-                </p>
 
-                <p>
-                  “The rainy season is over in Tokyo, and the hot summer has come!” Tokyo 2020 organizers declared
-                  during a news conference on Sunday amid temperatures in the low 90s and air that the Post describes as
-                  “so thick it felt as if you had to chew it before you could breathe it.”
-                </p>
-                <p>
-                  Although the summer heat always poses a risk to athletes, who are competing at a level of exertion
-                  that could put even the most physiological sound human in danger of heat stroke or illness, the Tokyo
-                  Games are poised to become the hottest in more than 35 years of recorded temperatures, a circumstance
-                  that we can be attributed at least in part to the creep of climate change and global warming.
-                </p>
+                <?php
+                $body_content = $row['post_content'];
+                $body_content = str_replace('<img src="../posts', '<img src="posts', $body_content);
 
+                ?>
+
+                <?php echo $body_content ?>
+
+              </div>
+            </div>
+
+            <div class="row likes">
+              <div class="col-md-12">
+                <div class="mx-auto">
+                  <button title="Like this post" class="like-btn"><i class="far fa-thumbs-up"></i></button>
+                  <button title="Dislike this post" class="dislike-btn"><i class="far fa-thumbs-down"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row body_content mt-5">
+              <div class="col-md-12">
                 <div class="related_story">
                   <div class="content">
                     <div class="box">
@@ -122,20 +122,6 @@
                     </div>
                   </div>
                 </div>
-
-                <p>
-                  In a cruel twist of fate, the weather in Tokyo last year was unseasonably cool, owing largely to the
-                  fact that the region’s rainy season <a href="">stretched longer</a> than usual. Those conditions still
-                  would have posed challenges to athletes — as will this year’s typhoons, which are still projected to
-                  take place right on schedule — but the cooler temperatures would have helped to offset some of the
-                  more immediate physical concerns of overexertion and heat stroke.
-                </p>
-                <p>
-                  In their efforts to prepare for the extreme temperatures, organizers have taken steps to accommodate
-                  athletes that might suffer in the heat, including installing shade tents, portable air conditioners,
-                  ice baths, coolers packed.
-                </p>
-
               </div>
             </div>
 
@@ -425,6 +411,20 @@
 <!-- scripts -->
 <?php include "sections/scripts.php" ?>
 <!-- scripts -->
+
+<script>
+  $(".ccb").click(function() {
+
+    var input = document.createElement('textarea');
+    input.innerHTML = $("#url_link").val();
+    document.body.appendChild(input);
+    input.select();
+    var result = document.execCommand('copy');
+    document.body.removeChild(input);
+
+    showAlert("Link copied to clipboard");
+  });
+</script>
 
 </body>
 

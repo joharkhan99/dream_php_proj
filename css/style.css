@@ -602,14 +602,15 @@ footer .cp span a {
   z-index: 9999;
   position: fixed;
   margin: 0 auto;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   top: 0;
-  left: 0;
+  left: 0%;
   padding: 30px;
-  /* object-fit: contain; */
+  object-fit: contain !important;
   display: block;
   cursor: zoom-out;
+  animation: none;
 }
 
 .single_blog .blog_category::before {
@@ -692,21 +693,25 @@ footer .cp span a {
   display: inline-block;
 }
 
-.single_blog .body .bio .date, .single_blog .body .bio .comment_link, .single_blog .body .bio .share {
+.single_blog .body .bio .date, .single_blog .body .bio .comment_link {
   word-wrap: break-word;
   color: rgb(117, 117, 117);
   font-size: 14px;
 }
 
-.single_blog .body .bio .share {
-  padding-left: 10px;
-  cursor: pointer;
-  font-size: 17px;
-  vertical-align: middle;
+.single_blog .body .bio button {
+  background: none;
+  border: none;
+  outline: none;
+  color: rgb(117, 117, 117);
 }
 
-.single_blog .body .bio .share_btn:hover .share, .single_blog .body .bio .share_btn:hover .text {
-  color: rgb(99, 99, 99);
+.single_blog .body .bio button:hover {
+  color: black;
+}
+
+.single_blog .body .bio button:active {
+  transform: scale(0.96);
 }
 
 .single_blog .body .bio .text {
@@ -768,6 +773,36 @@ footer .cp span a {
 
 .single_blog .body_content a:hover {
   color: var(--main-color);
+}
+
+.single_blog .body_content.mt-5 {
+  margin-bottom: 30px;
+  margin-top: 40px;
+}
+
+.single_blog .likes {
+  margin-top: 70px;
+  text-align: center;
+}
+
+.single_blog .likes button {
+  background: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  color: #ffffff;
+  border: 1px solid transparent;
+  margin-right: 20px;
+  outline: none;
+}
+
+.single_blog .likes button.like-btn {
+  background: var(--main-color);
+}
+
+.single_blog .likes button.dislike-btn {
+  background: tomato;
 }
 
 .single_blog .body_content .related_story {
@@ -853,7 +888,7 @@ footer .cp span a {
 
 .single_blog .body_content .related_story .content .box .body a {
   border-bottom: none;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .single_blog .body_content .related_story .content .box .body a:hover {
@@ -1277,7 +1312,7 @@ footer .cp span a {
 }
 
 .posts .col-md-4 .text {
-  margin-bottom: 3px;
+  margin-bottom: 10px;
   color: rgb(136 136 136);
   font-size: 14px;
 }
