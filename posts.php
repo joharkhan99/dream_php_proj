@@ -57,7 +57,7 @@
                   <?php
                   $url = strtolower(str_replace(" ", "-", $row['post_title']));
                   ?>
-                  <a href="blog.php?post=<?php echo $url ?>">
+                  <a href="blog.php?i=<?php echo $row['id'] ?>&post=<?php echo $url ?>">
                     <?php
                     $img = explode("../", $row['post_feature_image']);
                     ?>
@@ -74,7 +74,7 @@
                   <a href="categories.php?category=<?php echo $cat_url ?>"><?php echo $catg['cat_name'] ?></a>
                 </div>
                 <div class="title">
-                  <a href="blog.php?post=<?php echo $url ?>"><?php echo $row['post_title'] ?></a>
+                  <a href="blog.php?i=<?php echo $row['id'] ?>&post=<?php echo $url ?>"><?php echo $row['post_title'] ?></a>
                 </div>
 
                 <p class="text">
@@ -91,14 +91,14 @@
 
                 <?php
                 $query = "SELECT name,userkey FROM users WHERE users.userkey='" . $row['post_author'] . "' LIMIT 1";
-                $authir_result = mysqli_query($connection, $query);
-                $author = mysqli_fetch_assoc($authir_result);
+                $author_result = mysqli_query($connection, $query);
+                $author = mysqli_fetch_assoc($author_result);
                 $author_url = strtolower(str_replace(" ", "-", $author['name']));
                 ?>
 
                 <span class="_a">
                   By
-                  <a href="author.php?k=<?php echo $author['userkey'] ?>&author=<?php echo $author_url ?>" class="author"><?php echo $author['name']; ?></a>
+                  <a href="author.php?k=<?php echo substr($author['userkey'], 0, 5) ?>&author=<?php echo $author_url ?>" class="author"><?php echo $author['name']; ?></a>
                 </span>
                 <span class="date"><?php echo date("F jS, Y", strtotime($row['post_date'])) ?></span>
               </div>
