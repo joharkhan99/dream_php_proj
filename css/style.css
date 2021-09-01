@@ -795,6 +795,7 @@ footer .cp span a {
   border: 1px solid transparent;
   margin-right: 20px;
   outline: none;
+  transition: .1s;
 }
 
 .single_blog .likes button.like-btn {
@@ -803,6 +804,14 @@ footer .cp span a {
 
 .single_blog .likes button.dislike-btn {
   background: tomato;
+}
+
+.single_blog .likes button:hover {
+  opacity: 0.9;
+}
+
+.single_blog .likes button:active {
+  transform: scale(1.1);
 }
 
 .single_blog .body_content .related_story {

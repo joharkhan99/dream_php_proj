@@ -24,6 +24,7 @@
     if (isset($_GET['i']) && !empty($_GET['i'])) {
 
       $p_id = sanitize($_GET['i']);
+      ADDVIEW($p_id);
       $query = mysqli_query($connection, "SELECT * FROM posts INNER JOIN categories ON posts.post_categoryID=categories.cat_id INNER JOIN users ON posts.post_author=users.userkey WHERE posts.id='$p_id'");
       $row = mysqli_fetch_assoc($query);
       // print_r($row);
@@ -91,8 +92,8 @@
             <div class="row likes">
               <div class="col-md-12">
                 <div class="mx-auto">
-                  <button title="Like this post" class="like-btn"><i class="far fa-thumbs-up"></i></button>
-                  <button title="Dislike this post" class="dislike-btn"><i class="far fa-thumbs-down"></i></button>
+                  <button title="Like this post" onclick="LikePost(<?php echo $p_id; ?>)" class="like-btn"><i class="far fa-thumbs-up"></i></button>
+                  <button title="Dislike this post" onclick="DislikePost(<?php echo $p_id; ?>)" class="dislike-btn"><i class="far fa-thumbs-down"></i></button>
                 </div>
               </div>
             </div>

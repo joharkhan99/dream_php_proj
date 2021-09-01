@@ -127,4 +127,46 @@ function AddBlog($blog_seo_words, $blog_meta_desc, $blog_title, $blog_tagline, $
     return false;
   }
 }
+
+function LIKE($id)
+{
+  global $connection;
+  $id = sanitize($id);
+
+  $query = "UPDATE posts SET post_likes=post_likes+1 WHERE id='$id'";
+  $result = mysqli_query($connection, $query);
+  if ($result) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function DISLIKE($id)
+{
+  global $connection;
+  $id = sanitize($id);
+
+  $query = "UPDATE posts SET post_dislikes=post_dislikes+1 WHERE id='$id'";
+  $result = mysqli_query($connection, $query);
+  if ($result) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function ADDVIEW($id)
+{
+  global $connection;
+  $id = sanitize($id);
+
+  $query = "UPDATE posts SET post_views=post_views+1 WHERE id='$id'";
+  $result = mysqli_query($connection, $query);
+  if ($result) {
+    return true;
+  } else {
+    return false;
+  }
+}
 ?>

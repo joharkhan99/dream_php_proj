@@ -113,3 +113,25 @@ function A_C() {
   });
 };
 
+
+function LikePost(id) {
+  $.ajax({
+    method: "POST",
+    url: "ajax/l_d.php",
+    data: { like: 1, id: id },
+    success: function (response) {
+      showAlert("Thank you for your Feedback");
+    }
+  });
+}
+
+function DislikePost(id) {
+  $.ajax({
+    method: "POST",
+    url: "ajax/l_d.php",
+    data: { dislike: 1, id: id },
+    success: function (response) {
+      showAlert("Thank you for your Feedback");
+    }
+  });
+}
