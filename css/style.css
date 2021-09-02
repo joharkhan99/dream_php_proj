@@ -782,6 +782,7 @@ footer .cp span a {
 
 .single_blog .likes {
   margin-top: 70px;
+  margin-bottom: 70px;
   text-align: center;
 }
 
@@ -1092,7 +1093,7 @@ footer .cp span a {
 .comments .commenter-name .comment-time {
   font-weight: normal;
   margin-left: 8px;
-  font-size: 15px;
+  font-size: 11px;
 }
 
 .comments p.comment-txt {
@@ -1132,8 +1133,12 @@ footer .cp span a {
   margin-bottom: 0;
 }
 
-.comments .replied .commenter-name, .comments .replied .comment-time {
+.comments .replied .commenter-name {
   font-size: 15px;
+}
+
+.comments .replied .comment-time {
+  font-size: 11px;
 }
 
 .comments .replied {
@@ -1158,22 +1163,6 @@ footer .cp span a {
   margin-bottom: 10px;
   margin-top: 10px;
   display: inline-block;
-}
-
-.comments_section .comment_form .cancel_reply {
-  background: none;
-  border: none;
-  color: var(--main-color);
-  padding: 0;
-  padding-left: 10px;
-  font-size: 13px;
-  text-transform: lowercase;
-  outline: none;
-  visibility: hidden;
-}
-
-.comments_section .comment_form .cancel_reply:hover {
-  color: var(--link-active-color);
 }
 
 .comments_section .comment_form textarea {
@@ -1214,7 +1203,6 @@ footer .cp span a {
 }
 
 .categories .head {
-  border-bottom: var(--blog-border-bottom);
   padding-bottom: 14px;
 }
 

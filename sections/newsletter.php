@@ -1,7 +1,7 @@
 <div class="container newsletter">
   <div class="row">
     <div class="col-md-11 mx-auto">
-      <div class="heading">Subscribe to our newsletter!</div>
+      <div class="heading">Subscribe for Latest Updates!</div>
       <form action="" id="newsletter_form">
 
         <div class="form-group">

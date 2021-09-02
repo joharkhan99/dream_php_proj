@@ -42,24 +42,21 @@ $('.blog_content img').click(function (e) {
 // });
 function ToggleForm(param) {
   var parent = $(param).parent().parent();
+
   if ($(parent).find(".comment_form").length > 0) {
     $(".comment_form").hide();
-    $(".cancel_reply").css("visibility", "hidden");
     $($(".c_row_form")).append($(".comment_form"));
+    $(param).html('<i class="fa fa-reply-all" aria-hidden="true"></i> Reply');
   } else {
-    $(".cancel_reply").css("visibility", "visible");
     $(parent).append($(".comment_form"));
     $(".comment_form").show();
+    $(param).html('<i class="fas fa-times" style="color: tomato;" aria-hidden="true"></i> <span style="color: tomato;">Cancel</span>');
   }
+
   $(".comment_form").show();
+
 };
 
-function CancelReply(param) {
-  $(".cancel_reply").css("visibility", "hidden");
-  ToggleForm(param);
-  // // $(parent).append($(".comment_form"));
-  // $(".comment_form").show();
-}
 
 // alerts
 const hideAlert = () => {

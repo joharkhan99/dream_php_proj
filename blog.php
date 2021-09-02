@@ -98,33 +98,56 @@
               </div>
             </div>
 
-            <div class="row body_content mt-5">
-              <div class="col-md-12">
-                <div class="related_story">
-                  <div class="content">
-                    <div class="box">
-                      <div class="head">
-                        <h4>Related Stories</h4>
-                      </div>
 
-                      <div class="body">
-                        <ul>
-                          <li>
-                            <a href="javascript:void(0)">Astronauts Give Us a Delightful Look at What the Olympics
-                              Would Be Like in Space</a>
-                          </li>
-                          <li>
-                            <a href="javascript:void(0)">Astronauts Give Us a Delightful Look at What the Olympics
-                              Would Be Like in Space</a>
-                          </li>
-                        </ul>
-                      </div>
+            <?php
+            $post_title = $row['post_title'];
+            // $related_query = "SELECT * FROM posts WHERE post_categoryID = " . $row['cat_id'] . " AND id != " . $_GET['i'] . " ORDER BY  LIMIT 5";
 
+            $related_query = "SELECT * FROM posts WHERE post_categoryID = " . $row['cat_id'] . " AND id != " . $_GET['i'] . " ORDER BY RAND() LIMIT 0,10";
+
+            $related_result = mysqli_query($connection, $related_query);
+
+            if (mysqli_num_rows($related_result) > 0) {
+            ?>
+
+              <div class="row body_content mt-5">
+                <div class="col-md-12">
+                  <div class="related_story">
+                    <div class="content">
+                      <div class="box">
+                        <div class="head">
+                          <h4>Related Stories</h4>
+                        </div>
+
+                        <div class="body">
+                          <ul>
+
+                            <?php
+                            while ($related_row = mysqli_fetch_assoc($related_result)) :
+                              $url = strtolower(str_replace(" ", "-", $related_row['post_title']));
+                            ?>
+
+                              <li>
+                                <a href="blog.php?i=<?php echo $related_row['id'] ?>&post=<?php echo $url ?>"><?php echo $related_row['post_title'] ?></a>
+                              </li>
+                            <?php endwhile; ?>
+
+                          </ul>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+
+            <?php
+            } else {
+              // echo mysqli_error($connection);
+            }
+
+            ?>
+
 
 
           </div>
@@ -155,66 +178,42 @@
 
                     </div>
 
-                    <div class="comment-box">
-                      <span class="commenter-pic">
-                        <img src="img/test2.png" class="img-fluid">
-                      </span>
-                      <span class="commenter-name">
-                        <span>Happy markuptag</span> <span class="comment-time">2 hours ago</span>
-                      </span>
-                      <p class="comment-txt more">Suspendisse massa enim, condimentum sit amet maximus quis, pulvinar
-                        sit
-                        amet ante. Fusce eleifend dui mi, blandit vehicula orci iaculis ac.</p>
-                      <div class="comment-meta">
-                        <button class="comment-like"><i class="far fa-thumbs-up"></i> 99</button>
-                        <button class="comment-dislike"><i class="far fa-thumbs-down"></i>
-                          149</button>
-                        <button class="comment-reply" onclick="ToggleForm(this)"><i class="fa fa-reply-all" aria-hidden="true"></i>
-                          Reply</button>
-                      </div>
-                    </div>
-
-                    <div class="comment-box">
-                      <span class="commenter-pic">
-                        <img src="img/test4.png" class="img-fluid">
-                      </span>
-                      <span class="commenter-name">
-                        <span>Happy markuptag</span> <span class="comment-time">2 hours ago</span>
-                      </span>
-                      <p class="comment-txt more">Suspendisse massa enim, condimentum sit amet maximus quis, pulvinar
-                        sit
-                        amet ante. Fusce eleifend dui mi, blandit vehicula orci iaculis ac.</p>
-                      <div class="comment-meta">
-                        <button class="comment-like"><i class="far fa-thumbs-up"></i> 99</button>
-                        <button class="comment-dislike"><i class="far fa-thumbs-down"></i>
-                          149</button>
-                        <button class="comment-reply" onclick="ToggleForm(this)"><i class="fa fa-reply-all" aria-hidden="true"></i> Reply</button>
-                      </div>
-
-                      <div class="comment-box replied">
+                    <?php
+                    $comment_query = mysqli_query($connection, "SELECT * FROM comments WHERE post_id='$p_id'");
+                    while ($comments = mysqli_fetch_assoc($comment_query)) :
+                    ?>
+                      <div class="comment-box">
                         <span class="commenter-pic">
-                          <img src="img/test.png" class="img-fluid">
+                          <img src="profiles/<?php echo $comments['userimg'] ?>" class="img-fluid">
                         </span>
                         <span class="commenter-name">
-                          <span>Happy markuptag</span> <span class="comment-time">2 hours ago</span>
+                          <span><?php echo ucwords($comments['username']) ?></span> <span class="comment-time"><?php echo timeAgo($comments['comment_date']); ?></span>
                         </span>
-                        <p class="comment-txt more">Suspendisse massa enim, condimentum sit amet maximus quis, pulvinar
-                          sit amet ante. Fusce eleifend dui mi, blandit vehicula orci iaculis ac.</p>
+                        <p class="comment-txt more"><?php echo $comments['text'] ?></p>
+                        <div class="comment-meta">
+                          <button class="comment-reply" onclick="ToggleForm(this)"><i class="fa fa-reply-all" aria-hidden="true"></i>
+                            Reply</button>
+                        </div>
+
+                        <?php
+                        $reply_query = mysqli_query($connection, "SELECT * FROM comment_replies WHERE comment_id=" . $comments['comment_id'] . " AND post_id=" . $p_id . "");
+                        while ($replies = mysqli_fetch_assoc($reply_query)) :
+                        ?>
+                          <div class="comment-box replied">
+                            <span class="commenter-pic">
+                              <img src="profiles/<?php echo $replies['userimg'] ?>" class="img-fluid">
+                            </span>
+                            <span class="commenter-name">
+                              <span><?php echo ucwords($replies['username']) ?></span> <span class="comment-time"><?php echo timeAgo($replies['reply_date']) ?></span>
+                            </span>
+                            <p class="comment-txt more"><?php echo $replies['text'] ?></p>
+                          </div>
+                        <?php endwhile; ?>
+
+
                       </div>
 
-                      <div class="comment-box replied">
-                        <span class="commenter-pic">
-                          <img src="img/test.png" class="img-fluid">
-                        </span>
-                        <span class="commenter-name">
-                          <span>Happy markuptag</span> <span class="comment-time">2 hours ago</span>
-                        </span>
-                        <p class="comment-txt more">Suspendisse massa enim, condimentum sit amet maximus quis, pulvinar
-                          sit amet ante. Fusce eleifend dui mi, blandit vehicula orci iaculis ac.</p>
-                      </div>
-
-
-                    </div>
+                    <?php endwhile; ?>
 
                   </div>
 
@@ -224,7 +223,6 @@
                   <div class="row">
                     <div class="col-md-12">
                       <h3>LEAVE A REPLY</h3>
-                      <button class="cancel_reply" onclick="CancelReply(this)">Cancel Reply</button>
 
                       <form>
                         <div class="mb-3">
