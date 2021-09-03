@@ -162,59 +162,7 @@
                     <h4>Comments</h4>
                   </div>
 
-                  <div class="comments">
-                    <div class="comments-details">
-                      <span class="total-comments comments-sort">117 Comments</span>
-
-                      <div class="dropdown">
-                        <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                          Sort By
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                          <li><a class="dropdown-item" href="#">Action</a></li>
-                          <li><a class="dropdown-item" href="#">Another action</a></li>
-                        </ul>
-                      </div>
-
-                    </div>
-
-                    <?php
-                    $comment_query = mysqli_query($connection, "SELECT * FROM comments WHERE post_id='$p_id'");
-                    while ($comments = mysqli_fetch_assoc($comment_query)) :
-                    ?>
-                      <div class="comment-box">
-                        <span class="commenter-pic">
-                          <img src="profiles/<?php echo $comments['userimg'] ?>" class="img-fluid">
-                        </span>
-                        <span class="commenter-name">
-                          <span><?php echo ucwords($comments['username']) ?></span> <span class="comment-time"><?php echo timeAgo($comments['comment_date']); ?></span>
-                        </span>
-                        <p class="comment-txt more"><?php echo $comments['text'] ?></p>
-                        <div class="comment-meta">
-                          <button class="comment-reply" onclick="ToggleForm(this)"><i class="fa fa-reply-all" aria-hidden="true"></i>
-                            Reply</button>
-                        </div>
-
-                        <?php
-                        $reply_query = mysqli_query($connection, "SELECT * FROM comment_replies WHERE comment_id=" . $comments['comment_id'] . " AND post_id=" . $p_id . "");
-                        while ($replies = mysqli_fetch_assoc($reply_query)) :
-                        ?>
-                          <div class="comment-box replied">
-                            <span class="commenter-pic">
-                              <img src="profiles/<?php echo $replies['userimg'] ?>" class="img-fluid">
-                            </span>
-                            <span class="commenter-name">
-                              <span><?php echo ucwords($replies['username']) ?></span> <span class="comment-time"><?php echo timeAgo($replies['reply_date']) ?></span>
-                            </span>
-                            <p class="comment-txt more"><?php echo $replies['text'] ?></p>
-                          </div>
-                        <?php endwhile; ?>
-
-
-                      </div>
-
-                    <?php endwhile; ?>
-
+                  <div id="comm">
                   </div>
 
                 </div>
@@ -222,7 +170,7 @@
                 <div class="comment_form">
                   <div class="row">
                     <div class="col-md-12">
-                      <h3>LEAVE A REPLY</h3>
+                      <h3>LEAVE A COMMENT</h3>
 
                       <form>
                         <div class="mb-3">
@@ -422,6 +370,24 @@
     document.body.removeChild(input);
 
     showAlert("Link copied to clipboard");
+  });
+
+  function COMM(type = "default", p_id) {
+    $.ajax({
+      method: "POST",
+      url: "ajax/comm.php",
+      data: {
+        type: type,
+        p_id: p_id
+      },
+      success: function(response) {
+        $("#comm").html(response);
+      }
+    });
+  };
+
+  $(document).ready(function() {
+    COMM("recent", <?php echo $_GET['i'] ?>);
   });
 </script>
 
