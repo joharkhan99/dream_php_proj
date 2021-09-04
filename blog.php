@@ -51,7 +51,7 @@
           <div class="bio">
             <span class="author">By <a href="author.php?k=<?php echo substr($row['userkey'], 0, 5) ?>&author=<?php echo $author_url ?>"><?php echo ucwords($row['name']) ?></a></span>
             <span class="date"><?php echo date("m/d/y", strtotime($row['post_date'])) . " at " . date("g:i A", strtotime($row['post_date'])) ?></span>
-            <a class="comment_link" href="#comments_section">Comments (12)</a>
+            <button class="comment_link" onclick="location.href='#comments_section'">Comments</button>
 
             <?php
             $url_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -162,39 +162,101 @@
                     <h4>Comments</h4>
                   </div>
 
+                  <div class="comment_form">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h3>LEAVE A COMMENT</h3>
+
+                        <form name="comm_form" id="comm_form" method="POST" onsubmit="Su_Cm(event)">
+                          <div class="mb-3">
+                            <textarea name="comment_text" id="comment_text" cols="30" rows="10" class="form-control" placeholder="Comment: *"></textarea>
+                          </div>
+
+                          <?php
+                          $s = "";
+                          $checkbox = "save";
+                          if (isset($_COOKIE['uuid'])) {
+                            $s = "style='display:none'";
+                            $checkbox = "";
+                          }
+                          ?>
+
+                          <div class="s" <?php echo $s ?>>
+                            <div class="mb-3">
+                              <input type="name" name="name" class="form-control" placeholder="Name: *">
+                            </div>
+                            <div class="mb-3">
+                              <input type="email" name="email" class="form-control" placeholder="Email: *">
+                            </div>
+                            <input type="hidden" name="comm" id="c_scrt_p_j" value="<?php echo uniqid("c") ?>">
+                            <div class="form-check mb-3">
+                              <input class="form-check-input" name="<?php echo $checkbox; ?>" type="checkbox" id="<?php echo $checkbox; ?>">
+                              <label class="form-check-label" for="save">
+                                Save my name and email in this browser for the next time I comment.
+                              </label>
+                            </div>
+                          </div>
+
+
+                          <input type="hidden" name="p_id" value="<?php echo $p_id ?>">
+                          <button type="submit" class="btn btn-primary px-lg-5">Post Comment</button>
+
+                        </form>
+
+                      </div>
+                    </div>
+                  </div>
+
                   <div id="comm">
                   </div>
 
                 </div>
 
-                <div class="comment_form">
+                <!-- <div class="comment_form">
                   <div class="row">
                     <div class="col-md-12">
                       <h3>LEAVE A COMMENT</h3>
 
-                      <form>
+                      <form name="comm_form" id="comm_form" method="POST" onsubmit="Su_Cm(event)">
                         <div class="mb-3">
                           <textarea name="comment_text" id="comment_text" cols="30" rows="10" class="form-control" placeholder="Comment: *"></textarea>
                         </div>
-                        <div class="mb-3">
-                          <input type="name" class="form-control" placeholder="Name: *">
-                        </div>
-                        <div class="mb-3">
-                          <input type="email" class="form-control" placeholder="Email: *">
-                        </div>
-                        <div class="form-check mb-3">
-                          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
-                          <label class="form-check-label" for="flexCheckDefault">
-                            Save my name and email in this browser for the next time I comment.
-                          </label>
+
+                        <?php
+                        $s = "";
+                        $checkbox = "save";
+                        if (isset($_COOKIE['uuid'])) {
+                          $s = "style='display:none'";
+                          $checkbox = "";
+                        }
+                        ?>
+
+
+                        <div class="s" <?php echo $s ?>>
+                          <div class="mb-3">
+                            <input type="name" name="name" class="form-control" placeholder="Name: *">
+                          </div>
+                          <div class="mb-3">
+                            <input type="email" name="email" class="form-control" placeholder="Email: *">
+                          </div>
+                          <input type="hidden" name="comm" id="c_scrt_p_j" value="<?php echo uniqid("c") ?>">
+                          <div class="form-check mb-3">
+                            <input class="form-check-input" name="<?php echo $checkbox; ?>" type="checkbox" id="<?php echo $checkbox; ?>" checked>
+                            <label class="form-check-label" for="save">
+                              Save my name and email in this browser for the next time I comment.
+                            </label>
+                          </div>
                         </div>
 
+
+                        <input type="hidden" name="p_id" value="<?php echo $p_id ?>">
                         <button type="submit" class="btn btn-primary px-lg-5">Post Comment</button>
+
                       </form>
 
                     </div>
                   </div>
-                </div>
+                </div> -->
 
               </div>
             </div>
@@ -386,9 +448,78 @@
     });
   };
 
-  $(document).ready(function() {
-    COMM("recent", <?php echo $_GET['i'] ?>);
+  // $(document).ready(function() {
+  COMM("recent", <?php echo $_GET['i'] ?>);
+
+  $('.blog_content img,.comments_section img').click(function(e) {
+    $(this).toggleClass('fullscreen');
   });
+
+  function Su_Cm(event) {
+    event.preventDefault();
+    var f = new FormData($('#comm_form')[0]);
+
+    $.ajax({
+      type: "post",
+      url: "ajax/add_comm.php",
+      data: f,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+
+        if (response.includes("0")) {
+          showAlert(response.replace('0', ''));
+        } else {
+          showAlert(response);
+
+          if (typeof(document.getElementById('save')) != 'undefined' && document.getElementById('save') != null && document.getElementById('save').checked) {
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              COMM("recent", <?php echo $_GET['i'] ?>);
+            }, 2000);
+          }
+          $("#comm_form").trigger("reset");
+        }
+      }
+    });
+  };
+
+  function Rp_Cm(event) {
+    event.preventDefault();
+    var f = new FormData($('#reply_form')[0]);
+
+    $.ajax({
+      type: "post",
+      url: "ajax/rep_comm.php",
+      data: f,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        showAlert(response);
+        // if (response.includes("0")) {
+        //   showAlert(response.replace('0', ''));
+        // } else {
+        //   showAlert(response);
+
+        //   if (typeof(document.getElementById('save')) != 'undefined' && document.getElementById('save') != null && document.getElementById('save').checked) {
+        //     setTimeout(() => {
+        //       window.location.reload();
+        //     }, 2000);
+        //   } else {
+        //     setTimeout(() => {
+        //       COMM("recent", <?php echo $_GET['i'] ?>);
+        //     }, 2000);
+        //   }
+        //   $("#reply_form").trigger("reset");
+        // }
+      }
+    });
+  };
+
+  // });
 </script>
 
 </body>

@@ -234,4 +234,52 @@ function timeAgo($time_ago)
     }
   }
 }
+
+function random_pic($dir = '../profiles')
+{
+  $files = glob($dir . '/*.*');
+  $file = array_rand($files);
+  return $files[$file];
+}
+
+function AddComment($name, $email, $userimg, $p_id, $comment_text, $user_unique_id = "none")
+{
+  global $connection;
+
+  $query = "INSERT INTO comments(username,email,userimg,text,post_id,user_unique_id) VALUES('$name','$email','$userimg','$comment_text','$p_id','$user_unique_id')";
+  $result = mysqli_query($connection, $query);
+
+  if ($result) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+class GetSavedUserCommentInfo
+{
+  public $name, $email, $userimg, $user_unique_id;
+
+  function __construct($user_unique_id)
+  {
+    $this->user_unique_id = $user_unique_id;
+    $this->GetUserInfo();
+  }
+
+  public function GetUserInfo()
+  {
+    global $connection;
+    $query = "SELECT username,email,userimg FROM comments WHERE user_unique_id='" . $this->user_unique_id . "' LIMIT 1";
+    $result = mysqli_query($connection, $query);
+
+    if ($result) {
+      $row = mysqli_fetch_assoc($result);
+      $this->name = $row['username'];
+      $this->email = $row['email'];
+      $this->userimg = $row['userimg'];
+    } else {
+      return false;
+    }
+  }
+}
 ?>

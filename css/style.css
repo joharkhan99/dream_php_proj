@@ -693,10 +693,14 @@ footer .cp span a {
   display: inline-block;
 }
 
-.single_blog .body .bio .date, .single_blog .body .bio .comment_link {
+.single_blog .body .bio .date {
   word-wrap: break-word;
   color: rgb(117, 117, 117);
   font-size: 14px;
+}
+
+.single_blog .body .bio .comment_link {
+  color: var(--main-color);
 }
 
 .single_blog .body .bio button {
@@ -1181,6 +1185,7 @@ footer .cp span a {
 
 .comments_section .comment_form {
   padding-left: 20px;
+  margin-bottom: 40px;
 }
 
 .comments_section .comment_form h3 {
@@ -1214,6 +1219,10 @@ footer .cp span a {
 .comments_section .comment_form button, .comments_section .comment_form button:active {
   font-size: 14px;
   box-shadow: none;
+}
+
+.comments_section .comment_form button:focus {
+  box-shadow: 0px 0px 0px 3px #0067ff40;
 }
 
 /* ./single blog */

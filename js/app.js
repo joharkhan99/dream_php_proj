@@ -34,27 +34,38 @@ function toggleMenu() {
   }
 }
 
-// image enlargment
-// $(document).ready(function () {
-$('.blog_content img').click(function (e) {
-  $(this).toggleClass('fullscreen');
-});
-// });
 function ToggleForm(param) {
   var parent = $(param).parent().parent();
+  // var childs = $(parent);
 
   if ($(parent).find(".comment_form").length > 0) {
     $(".comment_form").hide();
     $($(".c_row_form")).append($(".comment_form"));
     $(param).html('<i class="fa fa-reply-all" aria-hidden="true"></i> Reply');
+    $("#reply_form").attr({
+      "id": "comm_form",
+      "name": "comm_form",
+      "onsubmit": "Su_Cm(event)"
+    });
+    $(".comment_form h3").text("LEAVE A COMMENT");
+    $("#c_scrt_p_j").attr("name", "comm");
+
   } else {
     $(parent).append($(".comment_form"));
     $(".comment_form").show();
     $(param).html('<i class="fas fa-times" style="color: tomato;" aria-hidden="true"></i> <span style="color: tomato;">Cancel</span>');
+    $("#comm_form").attr({
+      "id": "reply_form",
+      "name": "reply_form",
+      "onsubmit": "Rp_Cm(event)"
+    });
+    var name = $(parent).children(".commenter-name").children(".username").text();
+    $(".comment_form h3").text("REPLY TO " + name.toUpperCase());
+    $("#c_scrt_p_j").attr("name", "reply");
+
   }
 
   $(".comment_form").show();
-
 };
 
 
@@ -131,4 +142,4 @@ function DislikePost(id) {
       showAlert("Thank you for your Feedback");
     }
   });
-}
+};

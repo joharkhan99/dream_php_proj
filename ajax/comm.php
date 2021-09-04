@@ -42,15 +42,17 @@ if (isset($_POST['type']) && !empty($_POST['type'])) {
   </div>  
   ';
     while ($comments = mysqli_fetch_assoc($comment_query)) {
+      $comm_image = explode("../", $comments['userimg'])[1];
       $output .= '
     <div class="comment-box">
     <span class="commenter-pic">
-      <img src="profiles/' . $comments['userimg'] . '" class="img-fluid">
+      <img src="' . $comm_image . '" class="img-fluid">
     </span>
     <span class="commenter-name">
-      <span>' . ucwords($comments['username']) . '</span> <span class="comment-time">' . timeAgo($comments['comment_date']) . '</span>
+      <span class="username">' . ucwords($comments['username']) . '</span> <span class="comment-time">' . timeAgo($comments['comment_date']) . '</span>
     </span>
     <p class="comment-txt more">' . $comments['text'] . '</p>
+    <input type="hidden" name="c_id" id="c_id" value="' . $comments['comment_id'] . '">
     <div class="comment-meta">
       <button class="comment-reply" onclick="ToggleForm(this)"><i class="fa fa-reply-all" aria-hidden="true"></i>
         Reply</button>
@@ -58,10 +60,11 @@ if (isset($_POST['type']) && !empty($_POST['type'])) {
 
       $reply_query = mysqli_query($connection, "SELECT * FROM comment_replies WHERE comment_id=" . $comments['comment_id'] . " AND post_id=" . $p_id . "");
       while ($replies = mysqli_fetch_assoc($reply_query)) {
+        $reply_image = explode("../", $replies['userimg'])[1];
         $output .= '
       <div class="comment-box replied">
         <span class="commenter-pic">
-          <img src="profiles/' . $replies['userimg'] . '" class="img-fluid">
+          <img src="' . $reply_image . '" class="img-fluid">
         </span>
         <span class="commenter-name">
           <span>' . ucwords($replies['username']) . '</span> <span class="comment-time">' . timeAgo($replies['reply_date']) . '</span>
