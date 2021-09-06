@@ -25,7 +25,7 @@
           <div class="row">
 
             <?php
-            $results_per_page = 10;
+            $results_per_page = 12;
             $query = "SELECT * FROM posts ORDER BY post_date DESC";
             $result = mysqli_query($connection, $query);
             $number_of_result = mysqli_num_rows($result);
@@ -98,7 +98,7 @@
 
                 <span class="_a">
                   By
-                  <a href="author.php?k=<?php echo substr($author['userkey'], 0, 5) ?>&author=<?php echo $author_url ?>" class="author"><?php echo $author['name']; ?></a>
+                  <a href="author.php?k=<?php echo substr($author['userkey'], 0, 5) ?>&author=<?php echo $author_url ?>" class="author"><?php echo ucwords($author['name']); ?></a>
                 </span>
                 <span class="date"><?php echo date("F jS, Y", strtotime($row['post_date'])) ?></span>
               </div>
@@ -138,133 +138,7 @@
 
       </div>
 
-      <div class="col-md-3 recommended">
-        <div class="head">
-          <h4>Recommended Blogs</h4>
-        </div>
-
-        <div class="row blogs">
-
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-5">
-                <div class="blog_img">
-                  <a href="javascript:void(0)">
-                    <img src="img/test4.png" class="img-fluid" alt="">
-                  </a>
-                </div>
-              </div>
-              <div class="col-md-7">
-                <div class="category">
-                  <a href="javascript:void(0)">Internet</a>
-                </div>
-                <div class="blog-link">
-                  <a href="javascript:void(0)" class="title">
-                    <h4>
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit
-                    </h4>
-                  </a>
-                </div>
-                <div class="date">7/19/21 9:01PM</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-5">
-                <div class="blog_img">
-                  <a href="javascript:void(0)">
-                    <img src="img/test2.png" class="img-fluid" alt="">
-                  </a>
-                </div>
-              </div>
-              <div class="col-md-7">
-                <div class="category">
-                  <a href="javascript:void(0)">Internet</a>
-                </div>
-                <div class="blog-link">
-                  <a href="javascript:void(0)" class="title">
-                    <h4>
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit
-                    </h4>
-                  </a>
-                </div>
-                <div class="date">7/19/21 9:01PM</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-5">
-                <div class="blog_img">
-                  <a href="javascript:void(0)">
-                    <img src="img/test3.png" class="img-fluid" alt="">
-                  </a>
-                </div>
-              </div>
-              <div class="col-md-7">
-                <div class="category">
-                  <a href="javascript:void(0)">Internet</a>
-                </div>
-                <div class="blog-link">
-                  <a href="javascript:void(0)" class="title">
-                    <h4>
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit
-                    </h4>
-                  </a>
-                </div>
-                <div class="date">7/19/21 9:01PM</div>
-              </div>
-            </div>
-          </div>
-
-
-        </div>
-
-
-        <div class=".col-md-3 categories">
-          <div class="head">
-            <h4>Categories</h4>
-          </div>
-
-          <ul>
-            <li>
-              <a href="javascript:void(0)">
-                <span class="name">HTML and CSS</span>
-                <span class="count">90</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)">
-                <span class="name">HTML and CSS</span>
-                <span class="count">90</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div class=".col-md-3 recent_posts">
-          <div class="head">
-            <h4>Recent Posts</h4>
-          </div>
-
-          <ul>
-            <li>
-              <a href="javascript:void(0)">Astronauts Give Us a Delightful Look </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)">Astronauts Give Us a Delightful Look </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)">Astronauts Give Us a Delightful Look </a>
-            </li>
-          </ul>
-
-        </div>
-
-      </div>
+      <?php include "sections/sidebar.php" ?>
 
     </div>
 

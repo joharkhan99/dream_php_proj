@@ -9,12 +9,19 @@ if (!IsEmptyString($_POST['comm'])) {
       $user_unique_id = sanitize($_COOKIE['uuid']);
       $comment_text = sanitize($_POST['comment_text']);
       $p_id = sanitize($_POST['p_id']);
+
       $userinfo = new GetSavedUserCommentInfo($user_unique_id);
+      $userinfo2 = new GetSavedUserReplyInfo($user_unique_id);
 
       // 
       $name = $userinfo->name;
       $email = $userinfo->email;
       $userimg = $userinfo->userimg;
+
+      if (empty($name) || !isset($name) || empty($email) || !isset($email)) {
+        $name = $userinfo2->name;
+        $email = $userinfo2->email;
+      }
 
       if (AddComment($name, $email, $userimg, $p_id, $comment_text, $user_unique_id)) {
         echo "Comment Added";

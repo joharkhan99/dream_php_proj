@@ -194,7 +194,7 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
             setTimeout(() => {
               $("#a_b").trigger("reset");
               $("#summernote").summernote("code", "");
-            }, 2000);
+            }, 5000);
           }
         }
       });

@@ -42,7 +42,11 @@ if (isset($_POST['type']) && !empty($_POST['type'])) {
   </div>  
   ';
     while ($comments = mysqli_fetch_assoc($comment_query)) {
-      $comm_image = explode("../", $comments['userimg'])[1];
+      if (!empty($comments['userimg'])) {
+        $comm_image = explode("../", $comments['userimg'])[1];
+      } else {
+        $comm_image = "profiles/default.png";
+      }
       $output .= '
     <div class="comment-box">
     <span class="commenter-pic">
@@ -60,12 +64,8 @@ if (isset($_POST['type']) && !empty($_POST['type'])) {
 
       $reply_query = mysqli_query($connection, "SELECT * FROM comment_replies WHERE comment_id=" . $comments['comment_id'] . " AND post_id=" . $p_id . "");
       while ($replies = mysqli_fetch_assoc($reply_query)) {
-        $reply_image = explode("../", $replies['userimg'])[1];
         $output .= '
       <div class="comment-box replied">
-        <span class="commenter-pic">
-          <img src="' . $reply_image . '" class="img-fluid">
-        </span>
         <span class="commenter-name">
           <span>' . ucwords($replies['username']) . '</span> <span class="comment-time">' . timeAgo($replies['reply_date']) . '</span>
         </span>
