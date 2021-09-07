@@ -29,6 +29,10 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
 
 <body>
 
+  <div class="spin_overlay">
+    <div class="loader"></div>
+  </div>
+
   <div class="container write_a_blog">
 
     <div class="row back_to_site">
@@ -186,15 +190,19 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
         data: formData,
         processData: false,
         contentType: false,
+        beforeSend: function() {
+          $(".spin_overlay").css("display", "flex");
+        },
         success: function(response) {
           if (response.includes('0_e_0')) {
             showAlert(response.replace('0_e_0', ''));
+            $(".spin_overlay").css("display", "none");
           } else {
             showAlert(response);
+            $(".spin_overlay").css("display", "none");
             setTimeout(() => {
-              $("#a_b").trigger("reset");
-              $("#summernote").summernote("code", "");
-            }, 5000);
+              window.location.reload();
+            }, 3000);
           }
         }
       });

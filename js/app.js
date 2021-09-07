@@ -104,6 +104,29 @@ function Login() {
   });
 };
 
+function Signup() {
+  var formData = new FormData($('form[id="signup_form"]')[0]);
+
+  $.ajax({
+    type: "post",
+    url: "ajax/signup.php",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response.includes('0')) {
+        showAlert(response.replace('0', ''));
+      } else {
+        showAlert(response);
+        setTimeout(() => {
+          window.location.href = 'dashboard/';
+        }, 2000)
+
+      }
+    }
+  });
+};
+
 function A_C() {
   var f = new FormData($('#a_c')[0]);
 
@@ -147,91 +170,3 @@ function DislikePost(id) {
   });
 };
 
-function CheckPass(password) {
-  var password_strength = document.getElementById("password-text");
-
-  // Reset if password length is zero
-  if (password.length === 0) {
-    password_strength.innerHTML = "";
-    password_strength.value = "0";
-    return;
-  }
-
-  // Check progress
-  var prog = [/[$@$!%*#?&]/, /[A-Z]/, /[0-9]/, /[a-z]/]
-    .reduce((memo, test) => memo + test.test(password), 0);
-
-  // Length must be at least 8 chars
-  if (prog > 2 && password.length > 7) {
-    prog++;
-  }
-
-  // Display it
-  var progress = "";
-  var strength = "";
-  switch (prog) {
-    case 0:
-    case 1:
-    case 2:
-      strength = "25%";
-      progress = "25";
-      break;
-    case 3:
-      strength = "50%";
-      progress = "50";
-      break;
-    case 4:
-      strength = "75%";
-      progress = "75";
-      break;
-    case 5:
-      strength = "100% - Password strength is good";
-      progress = "100";
-      break;
-  }
-  password_strength.innerHTML = strength;
-  // document.getElementById("progress").value = progress;
-
-  // if (password.length == 0) {
-  //   password_strength.innerHTML = "";
-  //   return;
-  // }
-  // var regex = new Array();
-  // regex.push("[A-Z]"); //Uppercase
-  // regex.push("[a-z]"); //Lowercase
-  // regex.push("[0-9]"); //numbers
-  // regex.push("[$@$!%*#?&]"); //Characters
-  // // regex.push("[a-zA-Z0-9\b]{8}$"); //length
-  // var passed = 0;
-  // //Validate
-  // for (var i = 0; i < regex.length; i++) {
-  //   if (new RegExp(regex[i]).test(password)) {
-  //     passed++;
-  //   }
-  // }
-  // if (passed > 2 && password.length > 8) {
-  //   passed++;
-  // }
-
-  // //Display status.
-  // var strength = "";
-  // switch (passed) {
-  //   case 0:
-  //   case 1:
-  //   case 2:
-  //     strength = "<small class='progress-bar bg-danger' style='width: 30%'></small>";
-  //     break;
-  //   case 3:
-  //     strength = "<small class='progress-bar bg-warning' style='width: 50%'></small>";
-  //     break;
-  //   case 4:
-  //     strength = "<small class='progress-bar bg-warning' style='width: 70%'></small>";
-  //     break;
-  //   case 5:
-  //     strength = "<small class='progress-bar bg-success' style='width: 100%'></small>";
-  //     break;
-
-  // }
-  // password_strength.innerHTML = strength;
-
-}

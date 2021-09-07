@@ -1597,11 +1597,6 @@ footer .cp span a {
 
 /* login form */
 
-.login .form .progress-bar {
-  border-radius: 50px;
-  height: 9px;
-}
-
 .login .form {
   padding: 50px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -1621,7 +1616,11 @@ footer .cp span a {
   margin-bottom: 15px;
 }
 
-.login .form input, .login .form button {
+.login .form .input input, .login .form .input textarea {
+  font-size: 14px;
+}
+
+.login .form input, .login .form button, .login .form textarea {
   display: block;
   width: 100%;
   padding: 15px 15px;
@@ -1645,13 +1644,66 @@ footer .cp span a {
   background: var(--main-color);
 }
 
-.login .form input:focus {
-  border: 1px solid #efefef;
+.login .form input:focus, .login .form textarea:focus {
+  border: 1px solid var(--main-dark-color);
   background: #ffffff;
   box-shadow: 0px 0px 4px #00000014;
 }
 
+.login .form .input span {
+  font-size: 13px;
+  text-align: center;
+  display: block;
+  margin-top: 15px;
+  color: #616161;
+  padding-right: 5px;
+}
+
+.login .form .input span a {
+  text-decoration: underline;
+}
+
+.login .form .input span a:hover {
+  text-decoration: none;
+}
+
 /* login form */
+
+/* sign up */
+
+.image-area {
+  width: 150px;
+  height: 150px;
+  margin: auto;
+  position: relative;
+}
+
+.image-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50% !important;
+  background: none;
+}
+
+.image-area input {
+  position: absolute !important;
+  border-radius: 100px !important;
+  width: 100% !important;
+  border: none !important;
+  top: 3px !important;
+  background: none !important;
+  padding: 60px !important;
+  left: -24px !important;
+  z-index: -1;
+  box-shadow: none !important;
+}
+
+.image-area:hover input {
+  z-index: 1;
+}
+
+/* ./sign up */
 
 /* alert */
 
@@ -1831,4 +1883,48 @@ footer .cp span a {
 .view_more:hover {
   color: white;
   background: var(--main-dark-color);
+}
+
+/* loader */
+
+.spin_overlay {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #21212162;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: none;
+  align-items: center;
+}
+
+.spin_overlay .loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.view-blog {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.view-blog thead {
+  background: var(--main-color);
+  color: white;
 }

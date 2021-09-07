@@ -58,6 +58,19 @@ function GetUserRole($userkey)
   return mysqli_fetch_assoc($row)['role'];
 }
 
+function MakeUserRole($userkey)
+{
+  global $connection;
+  $userkey = sanitize($userkey);
+  $query = "INSERT INTO user_roles(userkey,roleId) VALUES('$userkey',2)";
+  $result = mysqli_query($connection, $query);
+  if (!$result) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 function loginUser($email, $password)
 {
   global $connection;
@@ -82,6 +95,39 @@ function loginUser($email, $password)
       } else {
         $_SESSION['userkey'] = '';
         $_SESSION['role'] = '';
+        return false;
+      }
+    }
+  }
+}
+
+function AddUser($name, $email, $password, $about, $image)
+{
+  global $connection;
+
+  if (emailExists($email)) {
+    return false;
+  } else {
+
+    if (!empty($email) && !empty($password)) {
+      $userkey = generate_key($email);
+      $hashedpassword = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
+
+      $query = "INSERT INTO users(userkey,name,email,password,profile_pic,user_description) VALUES('$userkey','$name','$email','$hashedpassword','$image','$about')";
+      $result = mysqli_query($connection, $query);
+
+      if ($result) {
+        if (MakeUserRole($userkey)) {
+          $_SESSION['userkey'] = $userkey;
+          $role = GetUserRole($userkey);
+          $_SESSION['role'] = $role;
+          return true;
+        } else {
+          $_SESSION['userkey'] = '';
+          $_SESSION['role'] = '';
+          return false;
+        }
+      } else {
         return false;
       }
     }

@@ -1,6 +1,11 @@
+<?php session_start(); ?>
 <!-- head -->
 <?php include "sections/header.php" ?>
 <!-- head -->
+
+<?php if (isset($_SESSION['role']) && isset($_SESSION['userkey'])) {
+  header("Location: dashboard/");
+} ?>
 
 <main>
 
@@ -20,6 +25,7 @@
           </div>
           <div class="input">
             <button type="submit">Sign In</button>
+            <span>Don't have an account? <a href="signup.php">Sign Up</a></span>
           </div>
         </form>
       </div>
