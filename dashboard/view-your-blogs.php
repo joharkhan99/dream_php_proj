@@ -29,16 +29,23 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
 
 <body>
 
-  <div class="container view-blog ">
+  <div class="container view-blog">
+
+    <div class="row back_to_site" style="margin-bottom: 30px;">
+      <div class="col-md-12">
+        <a href="index.php" class="btn btn-primary">&larr; Back To Dashboard</a>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-md-12">
 
 
-        <table class="table table-hover table-responsive table-borderless">
+        <table class="table table-hover table-responsive table-borderless table-striped text-center">
+
           <thead class="thead-dark">
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Author</th>
               <th scope="col">Blog</th>
               <th scope="col">Feature Image</th>
               <th scope="col">Blog Status</th>
@@ -49,18 +56,38 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
               <th scope="col">Total Dislikes</th>
             </tr>
           </thead>
+
           <tbody>
 
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>Otto</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
+            <?php
+            $authorkey = sanitize($_SESSION['userkey']);
+            $query = mysqli_query($connection, "SELECT * FROM posts WHERE post_author='$authorkey'");
+            $i = 0;
+            while ($row = mysqli_fetch_assoc($query)) :
+              $i++;
+              $url = strtolower(str_replace(" ", "-", $row['post_title']));
+            ?>
+              <tr>
+                <th scope="row"><?php echo $i; ?></th>
+                <td class="text-left">
+                  <a href="../blog.php?i=<?php echo $row['id'] ?>&post=<?php echo $url ?>" target="_blank" class="text-primary text-decoration-underline" title="View Blog">
+                    <?php echo $row['post_title']; ?><b>&nearr;</b>
+                  </a>
+                </td>
+                <td><img src="<?php echo $row['post_feature_image']; ?>" alt="" style="width: 100%;height: 60px;object-fit: cover;"></td>
+                <td><?php echo $row['post_status']; ?></td>
+                <td><?php echo $row['comment_status']; ?></td>
+                <td><?php echo $row['post_comment_count']; ?></td>
+                <td><?php echo $row['post_views']; ?></td>
+                <td><?php echo $row['post_likes']; ?></td>
+                <td><?php echo $row['post_dislikes']; ?></td>
+              </tr>
+
+            <?php endwhile; ?>
+
 
           </tbody>
+
         </table>
 
 

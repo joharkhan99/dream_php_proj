@@ -24,8 +24,15 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
 <body>
   <div class="container pt-5">
     <div class="row mb-4">
-      <div class="col-md-12">
-        <h5 class="text-muted">Hello, <?php echo strtoupper($_SESSION['role']) ?></h5>
+      <div class="col-md-12 text-center mb-5">
+        <?php include "../ajax/db.php" ?>
+        <?php
+        $userkey = $_SESSION['userkey'];
+        $query = mysqli_query($connection, "SELECT name,profile_pic FROM users WHERE userkey='$userkey'");
+        $row = mysqli_fetch_assoc($query);
+        ?>
+        <img src="../users/<?php echo $row['profile_pic'] ?>" class="rounded-circle mb-3" width="150px" height="150px" alt="" style="object-fit: cover;">
+        <h5 class="text-muted">Hello, <?php echo strtoupper($row['name']) ?></h5>
       </div>
     </div>
 
@@ -34,7 +41,10 @@ if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
         <a href="write-blog.php" class="btn btn-primary w-100">Write A Blog</a>
       </div>
       <div class="col-md-4 mb-3">
-        <a href="write-blog.php" class="btn btn-primary w-100">View Your Blogs</a>
+        <a href="view-your-blogs.php" class="btn btn-primary w-100">View Your Blogs</a>
+      </div>
+      <div class="col-md-4 mb-3">
+        <a href="view-your-drafts.php" class="btn btn-primary w-100">View Drafts</a>
       </div>
     </div>
 
