@@ -9,7 +9,7 @@ if (!IsEmptyString($_POST['email']) && !IsEmptyString($_POST['full_name']) && !I
   $name = sanitize($_POST['full_name']);
 
   if (strlen($password) < 8) {
-    echo "Password length should be greater than 8 characters0";
+    echo "Password length should be atleast 8 characters0";
   } elseif ($password != $confirm_password) {
     echo "Passwords do not match0";
   } elseif (emailExists($email)) {
@@ -26,27 +26,31 @@ if (!IsEmptyString($_POST['email']) && !IsEmptyString($_POST['full_name']) && !I
     if ($check !== false) {
 
       if ($_FILES["image"]["size"] > 5242880) {
-        echo "Maximum file size: 5mbs0";
+        echo "Maximum profile image size: 5mbs0";
         $uploadOk = 0;
+        exit();
       } elseif (
-        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif"
+        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif"
       ) {
         echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed0";
         $uploadOk = 0;
+        exit();
       } else {
         $uploadOk = 1;
       }
     } else {
-      echo "File is not an image0";
+      echo "Profile file is not an image0";
       $uploadOk = 0;
+      exit();
     }
 
     if ($uploadOk == 0) {
-      echo "Sorry, your file was not uploaded0";
+      echo " Sorry, your file was not uploaded0";
+      exit();
     } else {
       if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
         echo "Sorry, there was an error uploading your profile image0";
+        exit();
       } else {
         $image = str_replace("../users/", "", $target_file);
 

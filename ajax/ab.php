@@ -2,19 +2,19 @@
 
 <?php
 if (IsEmptyString($_POST['blog_seo_words'])) {
-  echo "Add Some SEO keywords";
+  echo "Add Some SEO keywords0_e_0";
 } elseif (IsEmptyString($_POST['blog_meta_desc'])) {
-  echo "Add Blog Meta Description";
+  echo "Add Blog Meta Description0_e_0";
 } elseif (IsEmptyString($_POST['blog_title'])) {
-  echo "Add Blog Title";
+  echo "Add Blog Title0_e_0";
 } elseif (IsEmptyString($_POST['blog_tagline'])) {
-  echo "Add Blog Tag Line";
+  echo "Add Blog Tag Line0_e_0";
 } elseif (IsEmptyString($_POST['blog_category'])) {
-  echo "Select Blog Category";
+  echo "Select Blog Category0_e_0";
 } elseif (empty($_FILES['blog_feature_image'])) {
-  echo "Add Blog Feature Image";
+  echo "Add Blog Feature Image0_e_0";
 } elseif (IsEmptyString($_POST['body'])) {
-  echo "Add Blog Body/Content";
+  echo "Add Blog Body/Content0_e_0";
 } else {
 
   if ($_FILES['blog_feature_image']['name']) {
@@ -41,6 +41,19 @@ if (IsEmptyString($_POST['blog_seo_words'])) {
         } else {
           echo 'Error Publishing0_e_0';
         }
+
+        if (!IsEmptyString($_POST['draft_id'])) {
+          $draft_id = $_POST['draft_id'];
+          if (DeleteFromDraft($draft_id)) {
+            echo 'Blog Published';
+          } else {
+            echo 'Error Publishing0_e_0';
+          }
+        }
+
+
+
+        // 
       } else {
         echo 'Error Publishing0_e_0';
       }

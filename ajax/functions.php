@@ -18,20 +18,40 @@ function sanitize($str)
 function emailExists($email)
 {
   global $connection;
-  if (!empty($email)) {
-    $query = "SELECT email FROM users WHERE email='$email'";
-    $result = mysqli_query($connection, $query);
-    if (mysqli_num_rows($result) > 0)   //means exist
+  if ($stmt = $connection->prepare('SELECT email FROM users WHERE email = ?')) {
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
       return true;
-    else
+    } else {
       return false;
+    }
+    $stmt->close();
+  }
+}
+
+function userKeyExists($key)
+{
+  global $connection;
+  if ($stmt = $connection->prepare('SELECT userkey FROM users WHERE userkey = ?')) {
+    $stmt->bind_param('s', $key);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+      return true;
+    } else {
+      return false;
+    }
+    $stmt->close();
   }
 }
 
 function IsEmptyString($str)
 {
   $str = sanitize($str);
-
   if (!isset($str) || empty($str)) {
     return true;
   } else {
@@ -74,63 +94,72 @@ function MakeUserRole($userkey)
 function loginUser($email, $password)
 {
   global $connection;
+  if (!IsEmptyString($email) && !IsEmptyString($password)) {
 
-  if (!emailExists($email)) {
-    return false;
-  } else {
+    $email = sanitize($email);
+    $password = sanitize($password);
 
-    if (!empty($email) && !empty($password) && emailExists($email)) {
-      $query = "SELECT * FROM users WHERE email='$email'";
-      $result = mysqli_query($connection, $query);
+    if (!emailExists($email)) {
+      return false;
+    } else {
 
-      $row = mysqli_fetch_assoc($result);
-      $db_email = $row['email'];
-      $db_pass = $row['password'];
-      $verifyPass = password_verify($password, $db_pass);
+      $stmt = $connection->prepare('SELECT userkey,email,password FROM users WHERE email = ?');
+      $stmt->bind_param('s', $email);
+      $stmt->execute();
+      $stmt->store_result();
 
-      if ($email == $db_email && $verifyPass) {
-        $_SESSION['userkey'] = $row['userkey'];
-        $_SESSION['role'] = GetUserRole($row['userkey']);
+      $stmt->bind_result($userkey, $dbemail, $dbpassword);
+      $stmt->fetch();
+      if (password_verify($password, $dbpassword) && $email == $dbemail) {
+        setcookie("_uacct_", $userkey, time() + 1 * 30 * 24 * 3600, "/");
         return true;
       } else {
-        $_SESSION['userkey'] = '';
-        $_SESSION['role'] = '';
         return false;
       }
+
+      $stmt->close();
     }
+
+    // 
+  } else {
+    return false;
   }
 }
 
 function AddUser($name, $email, $password, $about, $image)
 {
   global $connection;
+  if (!IsEmptyString($name) && !IsEmptyString($email) && !IsEmptyString($password) && !IsEmptyString($about) && !IsEmptyString($image)) {
 
-  if (emailExists($email)) {
-    return false;
-  } else {
+    $name = sanitize($name);
+    $email = sanitize($email);
+    $password = sanitize($password);
+    $about = sanitize($about);
+    $image = sanitize($image);
 
-    if (!empty($email) && !empty($password)) {
-      $userkey = generate_key($email);
-      $hashedpassword = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
+    if (emailExists($email)) {
+      return false;
+    } else {
 
-      $query = "INSERT INTO users(userkey,name,email,password,profile_pic,user_description) VALUES('$userkey','$name','$email','$hashedpassword','$image','$about')";
-      $result = mysqli_query($connection, $query);
+      if (!empty($email) && !empty($password)) {
+        $userkey = generate_key($email);
+        $hashedpassword = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 
-      if ($result) {
-        if (MakeUserRole($userkey)) {
-          $_SESSION['userkey'] = $userkey;
-          $role = GetUserRole($userkey);
-          $_SESSION['role'] = $role;
+        $stmt = $connection->prepare("INSERT INTO users(userkey, name, email,password,profile_pic,user_description) VALUES (?,?,?,?,?,?)");
+        $stmt->bind_param("ssssss", $userkey, $name, $email, $hashedpassword, $image, $about);
+
+        if ($stmt->execute()) {
+          setcookie("_uacct_", $userkey, time() + 1 * 30 * 24 * 3600, "/");
           return true;
         } else {
-          $_SESSION['userkey'] = '';
-          $_SESSION['role'] = '';
           return false;
         }
-      } else {
-        return false;
+
+        $stmt->close();
       }
     }
+  } else {
+    return false;
   }
 }
 
@@ -166,6 +195,37 @@ function AddBlog($blog_seo_words, $blog_meta_desc, $blog_title, $blog_tagline, $
   $author = sanitize($_SESSION['userkey']);
 
   $query = "INSERT INTO posts(post_author,post_content,post_title,comment_status,post_categoryID,post_keywords,post_meta_descp,post_tag,post_feature_image) VALUES('$author','$blog_body','$blog_title','$comment_status','$blog_category','$blog_seo_words','$blog_meta_desc','$blog_tagline','$feature_image')";
+  $result = mysqli_query($connection, $query);
+  if ($result) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function AddDraft($blog_seo_words, $blog_meta_desc, $blog_title, $blog_tagline, $blog_category, $blog_body, $comment_status, $feature_image)
+{
+
+  global $connection;
+  $author = sanitize($_SESSION['userkey']);
+
+  $query = "INSERT INTO drafts(post_author,post_content,post_title,comment_status,post_categoryID,post_keywords,post_meta_descp,post_tag,post_feature_image) VALUES('$author','$blog_body','$blog_title','$comment_status','$blog_category','$blog_seo_words','$blog_meta_desc','$blog_tagline','$feature_image')";
+  $result = mysqli_query($connection, $query);
+  if ($result) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function DeleteFromDraft($draft_id)
+{
+
+  global $connection;
+  $author = sanitize($_SESSION['userkey']);
+  $draft_id = sanitize($draft_id);
+
+  $query = "DELETE FROM drafts WHERE id='$draft_id' AND post_author='$author'";
   $result = mysqli_query($connection, $query);
   if ($result) {
     return true;
@@ -373,4 +433,6 @@ class GetSavedUserReplyInfo
     }
   }
 }
+// loginUser("test@gmail.com", "test1234");
+// echo $_COOKIE['uacct'];
 ?>

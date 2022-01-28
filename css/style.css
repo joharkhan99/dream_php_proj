@@ -7,7 +7,7 @@
   --p-color: rgb(105 105 105);
   --title-color: black;
   --author-font: "Arial Narrow", sans-serif;
-  --author-color: rgb(183 183 183);
+  --author-color: rgb(80, 80, 80);
   --blog-border-bottom: 1px solid rgb(229, 229, 229);
 }
 
@@ -28,7 +28,7 @@ a {
 
 img {
   background: lightgray;
-  background: linear-gradient( to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 80%), #d8d8d891;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 80%), #d8d8d891;
   background-repeat: repeat-y;
   background-size: 50px 200px;
   background-position: 0 0;
@@ -598,6 +598,7 @@ footer .cp span a {
 }
 
 @import url('https://fonts.googleapis.com/css?family=Abril+Fatface');
+
 .most_popular ol {
   list-style: none;
   counter-reset: my-awesome-counter;
@@ -615,7 +616,7 @@ footer .cp span a {
 }
 
 .most_popular ol li::before {
-  content: "0" counter(my-awesome-counter);
+  content: "0"counter(my-awesome-counter);
   font-weight: bold;
   font-size: 3rem;
   margin-right: 0.5rem;
@@ -661,6 +662,10 @@ footer .cp span a {
 
 .single_blog .blog_content img {
   cursor: zoom-in;
+}
+
+.single_blog .blog_content .col-md-12 {
+  word-break: break-word;
 }
 
 .single_blog .blog_content img.fullscreen {
@@ -1607,13 +1612,20 @@ footer .cp span a {
 }
 
 .login .form h1 {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   font-size: 30px;
   font-weight: bolder;
+  border-bottom: 1px solid #e9e9e9;
+  padding-bottom: 30px;
 }
 
 .login .form .input {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.login .form .input:last-child {
+  margin-top: 30px;
 }
 
 .login .form .input input, .login .form .input textarea {
@@ -1625,15 +1637,26 @@ footer .cp span a {
   width: 100%;
   padding: 15px 15px;
   border-radius: 10px;
-  border: 1px solid transparent;
-  background: #F8F8F8;
+  border: 1px solid #0000001a;
+  background: #f8f8f8db;
   transition: .3s;
   outline: none;
+}
+
+.login .form textarea {
+  height: 200px;
 }
 
 .login .form button {
   background: var(--main-color);
   color: white;
+  height: 51px;
+  transition: 0s;
+}
+
+.login .form button.spinner {
+  font-size: 0;
+  pointer-events: none;
 }
 
 .login .form button:hover {
@@ -1667,6 +1690,22 @@ footer .cp span a {
   text-decoration: none;
 }
 
+.hide_show {
+  position: absolute;
+  top: 17px;
+  right: 7px;
+  font-size: 13px;
+  color: var(--main-color);
+  cursor: pointer;
+  margin: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.hide_show:hover {
+  background: #1e90ff21;
+}
+
 /* login form */
 
 /* sign up */
@@ -1688,7 +1727,6 @@ footer .cp span a {
 
 .image-area input {
   position: absolute !important;
-  border-radius: 100px !important;
   width: 100% !important;
   border: none !important;
   top: 3px !important;
@@ -1745,6 +1783,7 @@ footer .cp span a {
     width: 100%;
     display: block !important;
   }
+
   .login .form {
     width: 90%;
     margin: auto;
@@ -1758,13 +1797,16 @@ footer .cp span a {
     font-size: 13px;
     top: -5px;
   }
+
   .comments .commenter-pic {
     width: 40px;
     height: 40px;
   }
+
   .comments .commenter-name a {
     display: block;
   }
+
   .comments .commenter-name .comment-time {
     display: block;
     margin-left: 0px;
@@ -1775,9 +1817,11 @@ footer .cp span a {
   .recommended {
     border-left: none;
   }
+
   .single_blog .body .main-content .feature-image figure {
     height: 200px;
   }
+
   .sect-2-blogs .blog_card .author, .four_grids_blog .blog_card .author {
     text-align: right;
   }
@@ -1787,21 +1831,27 @@ footer .cp span a {
   .most_recent ol li {
     padding-right: 0px;
   }
+
   .most_recent ol {
     padding-left: 10px;
   }
+
   .most_popular ol li, .most_recent ol li {
     width: 100%;
   }
+
   .newsletter .col-md-11 {
     padding: 50px 10px;
   }
+
   .single_blog .blog_heading h1 {
     font-size: 30px;
   }
+
   .single_blog .blog_heading h2 {
     font-size: 15px;
   }
+
   .single_blog .body_content .related_story .content .box {
     padding: 25px 10px;
   }
@@ -1811,53 +1861,67 @@ footer .cp span a {
   .mobile-nav {
     display: block;
   }
+
   .four_grids_blog .col, .sect-2-blogs .col-md-3 {
     width: 100%;
     padding: 0;
   }
+
   .four_grids_blog .blog_img, .sect-2-blogs .col-md-3 .blog_img {
     float: left;
     width: 150px;
     height: 100px;
     margin-right: 10px;
   }
+
   .four_grids_blog .blog_card .category a, .sect-2-blogs .col-md-3 .blog_card .category a, .four_grids_blog .blog_card .title h4, .sect-2-blogs .blog_card .title h4, .four_grids_blog .blog_card .author a, .sect-2-blogs .blog_card .author a {
     display: inline;
   }
+
   .four_grids_blog .blog_card .author {
     padding-top: 5px;
   }
+
   .four_grids_blog .col:nth-child(even) {
     border-left: none;
   }
+
   .four_grids_blog .col .blog_card {
     border-bottom: none;
     padding-bottom: 0px;
   }
+
   .left_blog .col-md-6:first-child {
     border-bottom: var(--blog-border-bottom);
     padding-bottom: 10px;
     margin-bottom: 10px;
   }
+
   .four_grids_blog .blog_card .category a, .sect-2-blogs .blog_card .category a {
     font-size: 14px;
   }
+
   .four_grids_blog .blog_card .title h4, .sect-2-blogs .blog_card .title h4 {
     font-size: 15px;
   }
+
   .four_grids_blog .col, .sect-2-blogs .col-md-3 {
     border-bottom: var(--blog-border-bottom) !important;
     padding-bottom: 10px;
   }
+
   .four_grids_blog .row {
     padding-bottom: 0px;
   }
+
   .left_blog {
     padding-bottom: 0px !important;
   }
+
   .sect-2-blogs {
     padding-top: 0px !important;
   }
+
   .sect-2-blogs .col-md-3 {
     border-right: none;
   }
@@ -1914,6 +1978,7 @@ footer .cp span a {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -1927,4 +1992,27 @@ footer .cp span a {
 .view-blog thead {
   background: var(--main-color);
   color: white;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -25px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: white;
+  border-left-color: white;
+  border-right-color: white;
+  animation: spinner .8s ease infinite;
 }

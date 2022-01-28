@@ -25,7 +25,7 @@
           </div>
 
           <div class="input">
-            <input type="text" name="full_name" id="full_name" placeholder="Enter full name" autocomplete="off">
+            <input type="text" name="full_name" id="full_name" placeholder="Enter your full name" autocomplete="off">
           </div>
 
           <div class="input">
@@ -38,6 +38,7 @@
 
           <div class="input">
             <input type="password" name="password" id="password" placeholder="Password">
+            <div class="hide_show" onclick="hideShowPass(this,'password')">Show</div>
           </div>
 
           <div class="input">
@@ -54,8 +55,6 @@
     </div>
   </div>
   <!-- ./form -->
-
-
 
   <!-- newsletter -->
   <?php include "sections/newsletter.php" ?>

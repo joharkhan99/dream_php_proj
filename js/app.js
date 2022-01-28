@@ -71,8 +71,6 @@ function ToggleForm(param) {
   $(".comment_form").show();
 };
 
-
-// alerts
 const hideAlert = () => {
   const el = document.querySelector('.cust_alert');
   if (el)
@@ -94,10 +92,15 @@ function Login() {
     data: formData,
     processData: false,
     contentType: false,
+    beforeSend: function (response) {
+      $('form[id="login_form"] button[type="submit"]').addClass("spinner");
+    },
     success: function (response) {
       if (response.includes('0')) {
         showAlert(response.replace('0', ''));
+        $('form[id="login_form"] button[type="submit"]').removeClass("spinner");
       } else {
+        $('form[id="login_form"] button[type="submit"]').removeClass("spinner");
         window.location.href = 'dashboard/';
       }
     }
@@ -113,15 +116,16 @@ function Signup() {
     data: formData,
     processData: false,
     contentType: false,
+    beforeSend: function (response) {
+      $('form[id="signup_form"] button[type="submit"]').addClass("spinner");
+    },
     success: function (response) {
       if (response.includes('0')) {
         showAlert(response.replace('0', ''));
+        $('form[id="signup_form"] button[type="submit"]').removeClass("spinner");
       } else {
-        showAlert(response);
-        setTimeout(() => {
-          window.location.href = 'dashboard/';
-        }, 2000)
-
+        $('form[id="signup_form"] button[type="submit"]').removeClass("spinner");
+        window.location.href = 'dashboard/';
       }
     }
   });
@@ -147,7 +151,6 @@ function A_C() {
   });
 };
 
-
 function LikePost(id) {
   $.ajax({
     method: "POST",
@@ -170,3 +173,13 @@ function DislikePost(id) {
   });
 };
 
+function hideShowPass(param, inputId) {
+  var x = document.getElementById(inputId);
+  if (x.type == "password") {
+    x.type = "text";
+    param.textContent = "Hide";
+  } else {
+    x.type = "password";
+    param.textContent = "Show";
+  }
+};

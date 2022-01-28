@@ -1,0 +1,115 @@
+/* comments */
+.comments {
+  /* background: white !important; */
+  width: 100%;
+  height: 100%;
+}
+
+.comments .comment-box {
+  width: 100%;
+  float: left;
+  height: auto;
+  /* background-color: #FAFAFA; */
+  padding: 10px 10px 10px;
+  margin-bottom: 15px;
+  /* border-radius: 5px; */
+  /* border: 1px solid #ddd; */
+}
+
+.comments .commenter-pic {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  border-radius: 100%;
+  border: 2px solid #fff;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.comments .commenter-pic img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.comments .commenter-name .comment-time {
+  font-weight: normal;
+  margin-left: 8px;
+  font-size: 11px;
+}
+
+.comments p.comment-txt {
+  font-size: 13px;
+  /* border-bottom: 1px solid #ddd; */
+  /* padding: 0px 0px 15px; */
+}
+
+.comments .commenter-name {
+  display: inline-block;
+  position: relative;
+  top: -20px;
+  left: 10px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.comments .replied .commenter-name {
+  top: 0;
+  left: 0;
+  margin-bottom: 10px;
+}
+
+.comments .replied {
+  width: 95%;
+  float: right;
+  margin-top: 15px;
+}
+
+.comments .replied .comment-txt {
+  border-bottom: none;
+  padding: 0;
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+.comments .replied .commenter-name {
+  font-size: 15px;
+}
+
+.comments .replied .comment-time {
+  font-size: 11px;
+}
+
+.comments .replied {
+  margin-top: 7px;
+  margin-bottom: 0;
+}
+
+.navbar-nav .img-profile {
+  object-fit: cover;
+}
+
+.gradient-1 {
+  background-image: linear-gradient(230deg, #759bff, #843cf6);
+}
+
+.gradient-2 {
+  background-image: linear-gradient(230deg, #1cc88a, #7eddba);
+}
+
+.gradient-3 {
+  background-image: linear-gradient(230deg, #ffc480, #ff763b);
+}
+
+.gradient-4 {
+  background-image: linear-gradient(230deg, #fc526a, #f79990);
+}
+
+.gradient-5 {
+  /* background-image: linear-gradient(230deg, #fc5286, #fbaaa2); */
+  background-image: linear-gradient(230deg, #0e4cfd, #6a8eff);
+}
+
+.custom-shadow1 {
+  box-shadow: 6px 11px 41px -28px #a99de7;
+}

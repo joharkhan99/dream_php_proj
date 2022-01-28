@@ -3,9 +3,11 @@
 <?php include "sections/header.php" ?>
 <!-- head -->
 
-<?php if (isset($_SESSION['role']) && isset($_SESSION['userkey'])) {
-  header("Location: dashboard/");
-} ?>
+<?php
+// if (isset($_SESSION['role']) && isset($_SESSION['userkey'])) {
+//   header("Location: dashboard/");
+// }
+?>
 
 <main>
 
@@ -22,6 +24,7 @@
           </div>
           <div class="input">
             <input type="password" name="password" id="password" placeholder="Password">
+            <div class="hide_show" onclick="hideShowPass(this,'password')">Show</div>
           </div>
           <div class="input">
             <button type="submit">Sign In</button>
