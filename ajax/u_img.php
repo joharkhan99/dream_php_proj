@@ -1,17 +1,22 @@
-<?php session_start(); ?>
 <?php
-// if ($_SESSION['role'] == 'admin') {
-
+include_once "functions.php";
+checkIfLogin();
+?>
+<?php
 if ($_FILES['file']['name']) {
   if (!$_FILES['file']['error']) {
-    $name = md5(rand(100, 200));
-    $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
-    $filename = $name . '.' . $ext;
-    $destination = '../posts/' . $filename;
-    $location = $_FILES["file"]["tmp_name"];
+    $image = $_FILES['file']['name'];
+    $image_tempAddress = $_FILES['file']['tmp_name'];
+    $file_extension = pathinfo($image, PATHINFO_EXTENSION);
+    $newname = uniqid(rand()) . str_replace("." . $file_extension, "", $image);
 
-    if (move_uploaded_file($location, $destination)) {
-      echo $destination;
+    $binary = @imagecreatefromstring(@file_get_contents($image));
+    $image_quality = floor(10 - (100 / 10));
+    @imagewebp($binary, "posts/" . $newname . '.webp', $image_quality);
+    $final = $newname . '.webp';
+
+    if (move_uploaded_file($image_tempAddress, "../posts/$final")) {
+      echo "../posts/$final";
     } else {
       echo 'Error Adding Image0_e_0';
     }
@@ -19,4 +24,3 @@ if ($_FILES['file']['name']) {
     echo '0_e_0Error Adding Image' . $_FILES['file']['error'];
   }
 }
-// }

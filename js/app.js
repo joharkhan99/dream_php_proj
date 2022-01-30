@@ -76,6 +76,7 @@ const hideAlert = () => {
   if (el)
     el.parentElement.removeChild(el);
 };
+
 const showAlert = (msg, time = 3) => {
   hideAlert();
   const markup = `<div class="cust_alert">${msg}</div>`;

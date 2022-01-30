@@ -1,3 +1,7 @@
+<?php
+include_once "../ajax/functions.php";
+checkIfLogin();
+?>
 <a class="scroll-to-top rounded" href="#page-top">
   <i class="fas fa-angle-up"></i>
 </a>
@@ -25,6 +29,9 @@
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/jquery.easing.min.js"></script>
 <script src="js/sb-admin-2.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="js/app.js"></script>
 </body>
 
 </html>

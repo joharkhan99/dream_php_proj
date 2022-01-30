@@ -1,9 +1,9 @@
 <?php ob_start(); ?>
 <?php include "../ajax/functions.php" ?>
 <?php
-if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
-  header("Location: ../login.php");
-}
+// if (!isset($_SESSION['userkey']) || !isset($_SESSION['role'])) {
+//   header("Location: ../login.php");
+// }
 ?>
 
 <!DOCTYPE html>

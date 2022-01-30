@@ -1,7 +1,5 @@
 <?php session_start(); ?>
 <?php include "db.php"; ?>
-<!-- admin -->
-<!-- admin@site@2899 -->
 <?php
 function sanitize($str)
 {
@@ -188,33 +186,117 @@ function G_Cat()
   echo $output;
 }
 
-function AddBlog($blog_seo_words, $blog_meta_desc, $blog_title, $blog_tagline, $blog_category, $blog_body, $comment_status, $feature_image)
+function AddArticle($article_title, $article_tags, $image, $article_category, $article_body)
 {
-
   global $connection;
-  $author = sanitize($_SESSION['userkey']);
+  if (!IsEmptyString($article_title) && !IsEmptyString($article_tags) && !IsEmptyString($image) && !IsEmptyString($article_category) && !IsEmptyString($article_body)) {
+    $author_key = $_COOKIE['_uacct_'];
+    if (!userKeyExists($author_key)) {
+      return false;
+    } else {
+      $catg_id = getPostCategoryID($article_category);
+      $stmt = $connection->prepare("INSERT INTO posts(post_author, post_content, post_title, post_categoryID, post_tags, post_feature_image) VALUES (?,?,?,?,?,?)");
+      $stmt->bind_param("ssssss", $author_key, $article_body, $article_title, $catg_id, $article_tags, $image);
+      if ($stmt->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+      $stmt->close();
+    }
+  } else {
+    return false;
+  }
+}
 
-  $query = "INSERT INTO posts(post_author,post_content,post_title,comment_status,post_categoryID,post_keywords,post_meta_descp,post_tag,post_feature_image) VALUES('$author','$blog_body','$blog_title','$comment_status','$blog_category','$blog_seo_words','$blog_meta_desc','$blog_tagline','$feature_image')";
-  $result = mysqli_query($connection, $query);
-  if ($result) {
+function getPostCategoryID($article_category)
+{
+  $id = "";
+  $article_category = strtolower($article_category);
+  if (postCategoryExists($article_category)) {
+    $id = getcatid($article_category);
+  } else {
+    if (addcat($article_category)) {
+      $id = getcatid($article_category);
+    }
+  }
+
+  return $id;
+}
+
+function addcat($article_category)
+{
+  global $connection;
+  $stmt = $connection->prepare('INSERT INTO categories(cat_name) VALUES(?)');
+  $stmt->bind_param('s', $article_category);
+  if ($stmt->execute()) {
     return true;
   } else {
     return false;
   }
 }
 
-function AddDraft($blog_seo_words, $blog_meta_desc, $blog_title, $blog_tagline, $blog_category, $blog_body, $comment_status, $feature_image)
+function getcatid($article_category)
+{
+  global $connection;
+  $stmt = $connection->prepare('SELECT cat_id FROM categories WHERE cat_name = ?');
+  $stmt->bind_param('s', $article_category);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $id = $result->fetch_assoc()['cat_id'];
+  return $id;
+}
+
+function getcatname($catid)
+{
+  global $connection;
+  $stmt = $connection->prepare('SELECT cat_name FROM categories WHERE cat_id = ?');
+  $stmt->bind_param('s', $catid);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $id = $result->fetch_assoc()['cat_name'];
+  return $id;
+}
+
+function postCategoryExists($article_category)
+{
+  global $connection;
+  if ($stmt = $connection->prepare('SELECT cat_name FROM categories WHERE cat_name = ?')) {
+    $stmt->bind_param('s', $article_category);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+      return true;
+    } else {
+      return false;
+    }
+    $stmt->close();
+  }
+}
+
+function AddDraft($article_title, $article_tags, $image, $article_category, $article_body)
 {
 
   global $connection;
-  $author = sanitize($_SESSION['userkey']);
+  $author_key = $_COOKIE['_uacct_'];
+  $catg_id = "0";
 
-  $query = "INSERT INTO drafts(post_author,post_content,post_title,comment_status,post_categoryID,post_keywords,post_meta_descp,post_tag,post_feature_image) VALUES('$author','$blog_body','$blog_title','$comment_status','$blog_category','$blog_seo_words','$blog_meta_desc','$blog_tagline','$feature_image')";
-  $result = mysqli_query($connection, $query);
-  if ($result) {
-    return true;
-  } else {
+  if (!userKeyExists($author_key)) {
     return false;
+  } else {
+    $post_status = 'draft';
+    if (!IsEmptyString($article_category) && strlen($article_category) > 0) {
+      $catg_id = getPostCategoryID($article_category);
+    }
+    $stmt = $connection->prepare("INSERT INTO posts(post_author, post_content, post_title,post_status, post_categoryID, post_tags, post_feature_image) VALUES (?,?,?,?,?,?,?)");
+    $stmt->bind_param("sssssss", $author_key, $article_body, $article_title, $post_status, $catg_id, $article_tags, $image);
+    if ($stmt->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+    $stmt->close();
   }
 }
 
@@ -232,6 +314,67 @@ function DeleteFromDraft($draft_id)
   } else {
     return false;
   }
+}
+
+function getPublishArticles()
+{
+  global $connection;
+  $output = "";
+  $post_author = $_COOKIE['_uacct_'];
+  $stmt = $connection->prepare('SELECT * FROM posts INNER JOIN categories ON posts.post_categoryID=cat_id WHERE post_status="publish" AND post_author=?');
+  $stmt->bind_param('s', $post_author);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $i = 0;
+  while ($row = $result->fetch_assoc()) {
+    $i++;
+    $catname = getcatname($row['post_categoryID']);
+    $output .= '
+    <tr>
+      <th scope="row">' . $i . '</th>
+      <td>' . $row['post_title'] . '</td>
+      <td>' . $row['post_date'] . '</td>
+      <td><img src="../feature/' . $row['post_feature_image'] . '" alt="' . $row['post_title'] . '"></td>
+      <td>' . $catname . '</td>
+      <td>' . $row['post_tags'] . '</td>
+      <td>' . $row['post_views'] . '</td>
+      <td>' . $row['post_comment_count'] . '</td>
+      <td><a href="javascript:void(0)" class="btn text-xs btn-primary">View</a></td>
+    </tr>
+    ';
+  }
+  echo $output;
+}
+
+function getDraftArticles()
+{
+  global $connection;
+  $output = "";
+  $post_author = $_COOKIE['_uacct_'];
+  $stmt = $connection->prepare('SELECT * FROM posts INNER JOIN categories ON posts.post_categoryID=cat_id WHERE post_status="draft" AND post_author=?');
+  $stmt->bind_param('s', $post_author);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $i = 0;
+  while ($row = $result->fetch_assoc()) {
+    $i++;
+    $catname = getcatname($row['post_categoryID']);
+    $image = !empty($row['post_feature_image']) ? '<img src="../feature/' . $row['post_feature_image'] . '" alt="' . $row['post_title'] . '">' : '';
+    $output .= '
+    <tr>
+      <th scope="row">' . $i . '</th>
+      <td>' . $row['post_title'] . '</td>
+      <td>' . $row['post_date'] . '</td>
+      <td>' . $image . '</td>
+      <td>' . $catname . '</td>
+      <td>' . $row['post_tags'] . '</td>
+      <td>' . $row['post_views'] . '</td>
+      <td>' . $row['post_comment_count'] . '</td>
+      <td><a href="javascript:void(0)" class="btn text-xs btn-primary" title="Coming Soon please bear with us!">Edit</a></td>
+    </tr>
+    ';
+  }
+  echo $output;
 }
 
 function LIKE($id)
@@ -376,6 +519,19 @@ function AddReply($comment_id, $name, $email, $p_id, $comment_text, $user_unique
   }
 }
 
+function checkIfLogin()
+{
+  if (empty($_COOKIE["_uacct_"]) || !isset($_COOKIE["_uacct_"])) {
+    header("Location: ../login.php");
+    die();
+  } elseif (isset($_COOKIE["_uacct_"])) {
+    if (!userKeyExists($_COOKIE["_uacct_"])) {
+      header("Location: ../login.php");
+      die();
+    }
+  }
+}
+
 class GetSavedUserCommentInfo
 {
   public $name = "", $email, $userimg, $user_unique_id;
@@ -433,6 +589,6 @@ class GetSavedUserReplyInfo
     }
   }
 }
-// loginUser("test@gmail.com", "test1234");
-// echo $_COOKIE['uacct'];
+
+
 ?>

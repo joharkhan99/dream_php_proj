@@ -48,17 +48,16 @@ if (!IsEmptyString($_POST['email']) && !IsEmptyString($_POST['full_name']) && !I
       echo " Sorry, your file was not uploaded0";
       exit();
     } else {
-      if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-        echo "Sorry, there was an error uploading your profile image0";
-        exit();
-      } else {
-        $image = str_replace("../users/", "", $target_file);
-
-        if (AddUser($name, $email, $password, $about, $image)) {
-          echo "Account Created Succefully!";
+      $image = str_replace("../users/", "", $target_file);
+      if (AddUser($name, $email, $password, $about, $image)) {
+        if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+          echo "Sorry, there was an error uploading your profile image0";
+          exit();
         } else {
-          echo "Error creating account!";
+          echo "Account Created Succefully!";
         }
+      } else {
+        echo "Error creating account!";
       }
     }
     // profile image

@@ -1,3 +1,7 @@
+body {
+  font-family: 'Poppins', sans-serif !important;
+}
+
 /* comments */
 .comments {
   /* background: white !important; */
@@ -112,4 +116,238 @@
 
 .custom-shadow1 {
   box-shadow: 6px 11px 41px -28px #a99de7;
+}
+
+.note-btn.dropdown-toggle::after {
+  content: none !important;
+}
+
+.panel-heading.note-toolbar .btn, .panel-heading.note-toolbar a {
+  color: black !important;
+  text-decoration: none;
+}
+
+.panel-heading.note-toolbar .btn {
+  border: 1px solid #c7c7c7;
+}
+
+.panel-heading.note-toolbar .btn:hover {
+  background: #f9f9f9;
+}
+
+.panel-heading.note-toolbar .note-dropdown-menu li:hover {
+  background: #0000001f !important;
+}
+
+.panel-heading.note-toolbar .note-dropdown-menu li h1 {
+  font-size: 36px;
+}
+
+.panel-heading.note-toolbar .note-dropdown-menu li blockquote {
+  font-size: 17.5px;
+  border-left: 5px solid #eee;
+}
+
+.panel-heading.note-toolbar .note-dropdown-menu li pre {
+  line-height: 1.42857143;
+  outline: none;
+  box-sizing: border-box;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  display: block;
+  font-size: 13px;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.panel-heading.note-toolbar .note-dropdown-menu li[aria-label="blockquote"] {
+  display: none;
+}
+
+.panel-default>.panel-heading {
+  color: #333;
+  background-color: #ebecee;
+  border-bottom: 1px solid #c6c7ca;
+}
+
+.note-editor.note-frame {
+  background: white;
+}
+
+.dropdown-menu>li>a {
+  display: block;
+  padding: 3px 10px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
+
+.link-dialog.show .modal-header,
+.note-modal.show .modal-header {
+  display: block;
+}
+
+.note-editable .table {
+  color: black !important;
+}
+
+#article-tags button {
+  border-radius: 20px;
+  background: white;
+  border: 1px solid #00000036;
+  color: #707070f0;
+  outline: none;
+  font-size: 13px;
+}
+
+#article-tags button:hover {
+  background: rgb(240, 240, 240);
+}
+
+#article-tags button::after {
+  content: "\d7";
+  color: red;
+  margin-left: 2px;
+}
+
+input.custom_input {
+  font-size: 14px;
+  padding: 1.2rem .7rem;
+  color: #5c5c5c;
+}
+
+input.custom_input::placeholder {
+  color: #b9b9b9;
+}
+
+input.custom_input:-ms-input-placeholder {
+  color: #b9b9b9;
+}
+
+input.custom_input::-ms-input-placeholder {
+  color: #b9b9b9;
+}
+
+input.custom_input:focus {
+  box-shadow: none;
+  border-color: #4e73df;
+}
+
+.badge {
+  font-size: 100% !important;
+  font-weight: 500 !important;
+  line-height: normal !important;
+}
+
+#add_form .form-group {
+  margin-bottom: 0 !important;
+}
+
+.feat_img_cont {
+  width: 120px;
+}
+
+.help-tool:hover {
+  color: #333 !important;
+  cursor: help;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner:before,
+.spinner2:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -11px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: white;
+  border-left-color: white;
+  border-right-color: white;
+  animation: spinner .8s ease infinite;
+}
+
+.spinner2:before {
+  border-top-color: #333;
+  border-left-color: #333;
+  border-right-color: #333;
+}
+
+button.form_btn {
+  height: 51px;
+}
+
+button.spinner,
+button.spinner2 {
+  font-size: 0;
+  pointer-events: none;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.cust_alert {
+  position: fixed;
+  z-index: 9999;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+  border-radius: 3px;
+  padding: 10px 10px;
+  right: 24px;
+  top: 40px;
+  width: auto;
+  background-color: #464646;
+  color: #ffffff;
+}
+
+@media screen and (max-width: 600px) {
+  .cust_alert {
+    padding-left: 3px;
+    padding-right: 3px;
+    width: 80%;
+    margin: auto;
+  }
+}
+
+.add_cat {
+  width: 90% !important;
+}
+
+.table .thead-primary th {
+  background-color: #4e73df;
+  border-color: #4e73df;
+  color: white;
+}
+
+.publish_page .table,
+.draft_page .table {
+  color: #333;
+  font-size: 13px;
+}
+
+.publish_page .table td img,
+.draft_page .table td img {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
 }
