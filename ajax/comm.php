@@ -16,9 +16,9 @@ if (isset($_POST['type']) && !empty($_POST['type'])) {
   }
 
   if (empty($order_by)) {
-    $comment_query = mysqli_query($connection, "SELECT * FROM comments WHERE post_id='$p_id'");
+    $comment_query = mysqli_query($connection, "SELECT * FROM comments INNER JOIN users ON users.userkey=comments.author WHERE post_id='$p_id'");
   } else {
-    $comment_query = mysqli_query($connection, "SELECT * FROM comments WHERE post_id='$p_id' ORDER BY comment_date $order_by");
+    $comment_query = mysqli_query($connection, "SELECT * FROM comments INNER JOIN users ON users.userkey=comments.author WHERE post_id='$p_id' ORDER BY comment_date $order_by");
   }
 
   if (mysqli_num_rows($comment_query) > 0) {
@@ -42,18 +42,13 @@ if (isset($_POST['type']) && !empty($_POST['type'])) {
   </div>  
   ';
     while ($comments = mysqli_fetch_assoc($comment_query)) {
-      if (!empty($comments['userimg'])) {
-        $comm_image = explode("../", $comments['userimg'])[1];
-      } else {
-        $comm_image = "profiles/default.png";
-      }
       $output .= '
     <div class="comment-box">
     <span class="commenter-pic">
-      <img src="' . $comm_image . '" class="img-fluid">
+      <img src="users/' . $comments['profile_pic'] . '" class="img-fluid" alt="' . $comments['name'] . '">
     </span>
     <span class="commenter-name">
-      <span class="username">' . ucwords($comments['username']) . '</span> <span class="comment-time">' . timeAgo($comments['comment_date']) . '</span>
+      <span class="username">' . ucwords($comments['name']) . '</span> <span class="comment-time">' . timeAgo($comments['comment_date']) . '</span>
     </span>
     <p class="comment-txt more">' . $comments['text'] . '</p>
     <input type="hidden" name="c_id" id="c_id" value="' . $comments['comment_id'] . '">
@@ -62,12 +57,12 @@ if (isset($_POST['type']) && !empty($_POST['type'])) {
         Reply</button>
     </div>';
 
-      $reply_query = mysqli_query($connection, "SELECT * FROM comment_replies WHERE comment_id=" . $comments['comment_id'] . " AND post_id=" . $p_id . "");
+      $reply_query = mysqli_query($connection, "SELECT name,text,reply_date FROM comment_replies INNER JOIN users ON users.userkey=comment_replies.author_id WHERE comment_id=" . $comments['comment_id'] . " AND post_id=" . $p_id . "");
       while ($replies = mysqli_fetch_assoc($reply_query)) {
         $output .= '
       <div class="comment-box replied">
         <span class="commenter-name">
-          <span>' . ucwords($replies['username']) . '</span> <span class="comment-time">' . timeAgo($replies['reply_date']) . '</span>
+          <span>' . ucwords($replies['name']) . '</span> <span class="comment-time">' . timeAgo($replies['reply_date']) . '</span>
         </span>
         <p class="comment-txt more">' . $replies['text'] . '</p>
       </div>

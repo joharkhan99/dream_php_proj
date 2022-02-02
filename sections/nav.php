@@ -1,4 +1,4 @@
-<header>
+<header class="shadow">
   <nav class="navbar navbar-expand-lg" aria-label="Eighth navbar example">
     <div class="container-lg">
 
@@ -15,7 +15,7 @@
             <a class="nav-link" href="#">Sign In</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Join</a>
+            <a class="nav-link btn btn-primary text-white rounded" href="#">Create account</a>
           </li>
         </ul>
       </div>

@@ -1,83 +1,23 @@
 <?php include "functions.php" ?>
 <?php
-if (!IsEmptyString($_POST['comm'])) {
+if (($_SERVER['REQUEST_METHOD'] == 'POST') && !empty($_COOKIE["_uacct_"]) && isset($_COOKIE["_uacct_"])) {
+  if (userKeyExists($_COOKIE["_uacct_"])) {
+    if (!IsEmptyString($_POST['comment_text']) && !IsEmptyString($_POST['p_id'])) {
 
-  if (isset($_COOKIE['uuid'])) {
-
-    if (!IsEmptyString($_POST['comment_text']) && !IsEmptyString($_POST['p_id']) && !empty($_COOKIE['uuid'])) {
-
-      $user_unique_id = sanitize($_COOKIE['uuid']);
       $comment_text = sanitize($_POST['comment_text']);
       $p_id = sanitize($_POST['p_id']);
+      $author = sanitize($_COOKIE["_uacct_"]);
 
-      $userinfo = new GetSavedUserCommentInfo($user_unique_id);
-      $userinfo2 = new GetSavedUserReplyInfo($user_unique_id);
-
-      // 
-      $name = $userinfo->name;
-      $email = $userinfo->email;
-      $userimg = $userinfo->userimg;
-
-      if (empty($name) || !isset($name) || empty($email) || !isset($email)) {
-        $name = $userinfo2->name;
-        $email = $userinfo2->email;
-      }
-
-      if (AddComment($name, $email, $userimg, $p_id, $comment_text, $user_unique_id)) {
+      if (AddComment($author, $p_id, $comment_text)) {
         echo "Comment Added";
       } else {
         echo "Oops! Something went wrong0";
       }
-
-      // ------
     } else {
-      echo "Oops! Something went wrong0";
+      echo "Please provide comment/message0";
     }
-
-    // ==============
-  } else {
-
-    if (!IsEmptyString($_POST['comment_text']) && !IsEmptyString($_POST['name']) && !IsEmptyString($_POST['email'])  && !IsEmptyString($_POST['p_id'])) {
-
-      $comment_text = sanitize($_POST['comment_text']);
-      $name = sanitize($_POST['name']);
-      $email = sanitize($_POST['email']);
-      $p_id = sanitize($_POST['p_id']);
-      $userimg = random_pic();
-
-      // -----if save on--------
-      if (isset($_POST['save'])) {
-        if ($_POST['save'] == 'on') {
-
-          $save = sanitize($_POST['save']);
-          $user_unique_id = generate_key($_POST['email']);
-          setcookie("uuid", $user_unique_id, time() + 90 * 24 * 60 * 60, "/");
-
-          if (AddComment($name, $email, $userimg, $p_id, $comment_text, $user_unique_id)) {
-            echo "Comment Added";
-          } else {
-            echo "Oops! Something went wrong0";
-          }
-        }
-        // -----if save on--------
-      } else {
-
-        if (AddComment($name, $email, $userimg, $p_id, $comment_text)) {
-          echo "Comment Added";
-        } else {
-          echo "Oops! Something went wrong0";
-        }
-      }
-
-      // -------------
-    } else {
-      echo "Please provide name, email and comment.0";
-    }
-
-
-
-    // ---------cookie
   }
+  // ---------cookie
 } else {
-  echo "Oops! Something went wrong";
+  echo "Oops! Something went wrong0";
 }

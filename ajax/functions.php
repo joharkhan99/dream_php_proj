@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <?php include "db.php"; ?>
 <?php
 function sanitize($str)
@@ -76,6 +75,52 @@ function GetUserRole($userkey)
   return mysqli_fetch_assoc($row)['role'];
 }
 
+function getuserinfo($id, $col)
+{
+  global $connection;
+  $stmt = $connection->prepare('SELECT ' . $col . ' FROM users WHERE userkey = ?');
+  $stmt->bind_param('s', $id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $output = $result->fetch_assoc()[$col];
+  echo $output;
+}
+
+function getusertotalposts($id, $post_status = 'publish')
+{
+  global $connection;
+  $stmt = $connection->prepare('SELECT COUNT(*) as total FROM posts WHERE post_status = ? AND post_author=?');
+  $stmt->bind_param('ss', $post_status, $id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $output = $result->fetch_assoc()['total'];
+  echo $output;
+}
+
+function getusertotalviews($id)
+{
+  global $connection;
+  $post_status = 'publish';
+  $stmt = $connection->prepare('SELECT SUM(post_views) as total FROM posts WHERE post_status = ? AND post_author=?');
+  $stmt->bind_param('ss', $post_status, $id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $output = $result->fetch_assoc()['total'];
+  echo empty($output) ? 0 : $output;
+}
+
+function getusertotalcomments($id)
+{
+  global $connection;
+  $post_status = 'publish';
+  $stmt = $connection->prepare('SELECT SUM(post_comment_count) as total FROM posts WHERE post_status = ? AND post_author=?');
+  $stmt->bind_param('ss', $post_status, $id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $output = $result->fetch_assoc()['total'];
+  echo empty($output) ? 0 : $output;
+}
+
 function MakeUserRole($userkey)
 {
   global $connection;
@@ -129,7 +174,7 @@ function AddUser($name, $email, $password, $about, $image)
   global $connection;
   if (!IsEmptyString($name) && !IsEmptyString($email) && !IsEmptyString($password) && !IsEmptyString($about) && !IsEmptyString($image)) {
 
-    $name = sanitize($name);
+    $name = str_replace("-", " ", sanitize($name));
     $email = sanitize($email);
     $password = sanitize($password);
     $about = sanitize($about);
@@ -303,17 +348,17 @@ function AddDraft($article_title, $article_tags, $image, $article_category, $art
 function DeleteFromDraft($draft_id)
 {
 
-  global $connection;
-  $author = sanitize($_SESSION['userkey']);
-  $draft_id = sanitize($draft_id);
+  // global $connection;
+  // $author = sanitize($_SESSION['userkey']);
+  // $draft_id = sanitize($draft_id);
 
-  $query = "DELETE FROM drafts WHERE id='$draft_id' AND post_author='$author'";
-  $result = mysqli_query($connection, $query);
-  if ($result) {
-    return true;
-  } else {
-    return false;
-  }
+  // $query = "DELETE FROM drafts WHERE id='$draft_id' AND post_author='$author'";
+  // $result = mysqli_query($connection, $query);
+  // if ($result) {
+  //   return true;
+  // } else {
+  //   return false;
+  // }
 }
 
 function getPublishArticles()
@@ -418,6 +463,7 @@ function ADDVIEW($id)
     return false;
   }
 }
+
 function timeAgo($time_ago)
 {
   $time_ago = strtotime($time_ago);
@@ -484,39 +530,30 @@ function timeAgo($time_ago)
   }
 }
 
-function random_pic($dir = '../profiles')
-{
-  $files = glob($dir . '/*.*');
-  $file = array_rand($files);
-  return $files[$file];
-}
-
-function AddComment($name, $email, $userimg, $p_id, $comment_text, $user_unique_id = "none")
+function AddComment($author, $p_id, $comment_text)
 {
   global $connection;
-
-  $query = "INSERT INTO comments(username,email,userimg,text,post_id,user_unique_id) VALUES('$name','$email','$userimg','$comment_text','$p_id','$user_unique_id')";
-  $result = mysqli_query($connection, $query);
-
-  if ($result) {
+  $stmt = $connection->prepare("INSERT INTO comments(text,post_id,author) VALUES (?,?,?)");
+  $stmt->bind_param("sss", $comment_text, $p_id, $author);
+  if ($stmt->execute()) {
     return true;
   } else {
     return false;
   }
+  $stmt->close();
 }
 
-function AddReply($comment_id, $name, $email, $p_id, $comment_text, $user_unique_id = "none")
+function AddReply($author, $comment_id, $p_id, $comment_text)
 {
   global $connection;
-
-  $query = "INSERT INTO comment_replies(comment_id,username,email,text,post_id,user_unique_id) VALUES('$comment_id','$name','$email','$comment_text','$p_id','$user_unique_id')";
-  $result = mysqli_query($connection, $query);
-
-  if ($result) {
+  $stmt = $connection->prepare("INSERT INTO comment_replies(comment_id,post_id,text,author_id) VALUES (?,?,?,?)");
+  $stmt->bind_param("ssss", $comment_id, $p_id, $comment_text, $author);
+  if ($stmt->execute()) {
     return true;
   } else {
     return false;
   }
+  $stmt->close();
 }
 
 function checkIfLogin()
@@ -588,6 +625,306 @@ class GetSavedUserReplyInfo
       return false;
     }
   }
+}
+
+function getTopBlog()
+{
+  global $connection;
+  $query = mysqli_query($connection, "SELECT posts.id as post_id,post_feature_image,post_title,cat_name,name,userkey FROM posts INNER JOIN categories ON categories.cat_id=posts.post_categoryID INNER JOIN users ON users.userkey=posts.post_author WHERE post_status='publish' ORDER BY posts.post_date DESC LIMIT 14");
+  $res = mysqli_fetch_assoc($query);
+  $rows = array();
+  while ($res = mysqli_fetch_assoc($query)) {
+    $rows[] = $res;
+  }
+  return $rows;
+}
+
+function getMostPopular()
+{
+  global $connection;
+  $popular_query = mysqli_query($connection, "SELECT id,post_title FROM posts WHERE post_status='publish' ORDER BY post_views DESC LIMIT 5");
+  $output = "";
+  while ($popular_row = mysqli_fetch_assoc($popular_query)) {
+    $pop_url = slugify($popular_row['post_title']);
+    $output .= '
+    <li>
+      <a href="article.php?i=' . $popular_row['id'] . '&article=' . $pop_url . '" class="blog-link">
+        <div class="title">
+          <h4>' . ucwords($popular_row['post_title']) . '</h4>
+        </div>
+      </a>
+    </li>';
+  }
+  echo $output;
+}
+
+function getRecentComments()
+{
+  global $connection;
+  $recent_comment_query = mysqli_query($connection, "SELECT posts.id,post_title,profile_pic,name,text FROM comments INNER JOIN posts ON comments.post_id=posts.id INNER JOIN users ON users.userkey=comments.author ORDER BY comment_date DESC LIMIT 10");
+  $out = "";
+  while ($comm_row = mysqli_fetch_assoc($recent_comment_query)) {
+    if (empty($comm_row['profile_pic'])) {
+      $image = "users/default.png";
+    } else {
+      $image = 'users/' . $comm_row['profile_pic'];
+    }
+
+    if (strlen($comm_row['post_title']) > 90) {
+      $comm_title = substr($comm_row['post_title'], 0, 85) . "...";
+    } else {
+      $comm_title = $comm_row['post_title'];
+    }
+
+    if (strlen($comm_row['text']) > 100) {
+      $comm_text = substr($comm_row['text'], 0, 100) . "...";
+    } else {
+      $comm_text = $comm_row['text'];
+    }
+
+    $out .= '
+    <li>
+      <div class="img">
+        <img src="' . $image . '" alt="' . $comm_row['name'] . '">
+      </div>
+      <div class="content">
+        <i class="fas fa-user"></i>
+        <span class="name">' . $comm_row['name'] . '</span> on
+        <a href="article.php?i=' . $comm_row['id'] . '&article=' . slugify($comm_row['post_title']) . '">' . $comm_title . '</a>
+        <p>' . $comm_text . '</p>
+      </div>
+    </li>
+    ';
+  }
+  echo $out;
+}
+
+function slugify($text, string $divider = '-')
+{
+  $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
+  $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+  $text = preg_replace('~[^-\w]+~', '', $text);
+  $text = trim($text, $divider);
+  $text = preg_replace('~-+~', $divider, $text);
+  $text = strtolower($text);
+  if (empty($text)) {
+    return 'n-a';
+  }
+  return $text;
+}
+
+function categoryURL($text)
+{
+  return strtolower(str_replace(" ", "--", $text));
+}
+
+function categoryURLUnslug($text)
+{
+  return strtolower(str_replace("--", " ", $text));
+}
+
+function getCategoryPosts($category)
+{
+  global $connection;
+  $out = '';
+
+  $query = mysqli_query($connection, "SELECT posts.id AS post_id,post_feature_image,post_title,userkey,users.name,post_date FROM posts INNER JOIN categories ON categories.cat_id=posts.post_categoryID INNER JOIN users ON users.userkey=posts.post_author WHERE categories.cat_name LIKE '%$category%' AND posts.post_status='publish' ORDER BY post_date DESC");
+
+  while ($row = mysqli_fetch_assoc($query)) {
+    $out .= '
+    <div class="col-md-4">
+    <div class="image">
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '">
+        <img src="feature/' . $row['post_feature_image'] . '" alt="">
+      </a>
+    </div>
+    <div class="content">
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '" class="title">' . $row['post_title'] . '</a>
+      <div>
+      <span class="_a">
+        <a href="author.php?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" class="author">By' . ucwords($row['name']) . '</a>
+      </span>
+      <span class="date">' . date("F jS, Y", strtotime($row['post_date'])) . '</span>
+      </div>
+    </div>
+    </div>';
+  }
+  echo $out;
+}
+
+function getUserArticles($author_id, $author_name)
+{
+  global $connection;
+  $out = '';
+
+  $query = mysqli_query($connection, "SELECT posts.id AS post_id,post_feature_image,post_title,userkey,users.name,post_date FROM posts INNER JOIN categories ON categories.cat_id=posts.post_categoryID INNER JOIN users ON users.userkey=posts.post_author WHERE SUBSTRING(users.userkey,1,7) LIKE '%$author_id%' AND users.name LIKE '%$author_name%' AND posts.post_status='publish' ORDER BY post_date DESC");
+
+  while ($row = mysqli_fetch_assoc($query)) {
+    $out .= '
+    <div class="col-md-4">
+    <div class="image">
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '">
+        <img src="feature/' . $row['post_feature_image'] . '" alt="">
+      </a>
+    </div>
+    <div class="content">
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '" class="title">' . $row['post_title'] . '</a>
+      <div>
+      <span class="_a">
+        <a href="author.php?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" class="author">By ' . ucwords($row['name']) . '</a>
+      </span>
+      <span class="date">' . date("F jS, Y", strtotime($row['post_date'])) . '</span>
+      </div>
+    </div>
+    </div>';
+  }
+  echo $out;
+}
+
+function getRecommendedPosts()
+{
+  global $connection;
+  $output = "";
+  $stmt = $connection->prepare('SELECT posts.id AS post_id,post_title,post_feature_image,cat_name,post_date FROM posts INNER JOIN categories ON posts.post_categoryID=cat_id WHERE post_status="publish" ORDER BY post_views DESC LIMIT 3');
+  $stmt->execute();
+  $result = $stmt->get_result();
+  while ($row = $result->fetch_assoc()) {
+    $output .= '
+    <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="blog_img">
+          <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '">
+          <img src="feature/' . $row['post_feature_image'] . '" alt="" class="img-fluid">
+          </a>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="category">
+          <a href="categories.php?category=' . categoryURL($row['cat_name']) . '">' . strtoupper($row['cat_name']) . '</a>
+        </div>
+        <div class="blog-link">
+          <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '" class="title">
+            <h4>' . $row['post_title'] . '</h4>
+          </a>
+        </div>
+        <div class="date">' . date("F jS, Y", strtotime($row['post_date'])) . '</div>
+      </div>
+    </div>
+  </div>
+    ';
+  }
+  echo $output;
+}
+
+function getSidebarCategories()
+{
+  global $connection;
+  $catg_query = mysqli_query($connection, "SELECT cat_name,COUNT(*) AS total FROM posts INNER JOIN categories ON posts.post_categoryID=categories.cat_id GROUP BY posts.post_categoryID ORDER BY total DESC");
+
+  $out = "";
+  while ($row = mysqli_fetch_assoc($catg_query)) {
+    $out .= '
+      <li>
+        <a href="categories.php?category=' . categoryURL($row['cat_name']) . '">
+          <span class="name">' . strtoupper($row['cat_name']) . '</span>
+          <span class="count">' . $row['total'] . '</span>
+        </a>
+      </li>
+    ';
+  }
+  echo $out;
+}
+
+function getSidebarRecent()
+{
+  global $connection;
+  $catg_query = mysqli_query($connection, "SELECT id AS post_id,post_title FROM posts WHERE post_status='publish' ORDER BY post_date DESC LIMIT 10");
+
+  $out = "";
+  while ($row = mysqli_fetch_assoc($catg_query)) {
+    $out .= '
+    <li>
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '">' . $row['post_title'] . '</a>
+    </li>
+    ';
+  }
+  echo $out;
+}
+
+function getSidebarComments()
+{
+  global $connection;
+  $catg_query = mysqli_query($connection, "SELECT posts.id AS post_id,post_title,name,text FROM comments INNER JOIN posts ON comments.post_id=posts.id INNER JOIN users ON users.userkey=comments.author ORDER BY comment_date DESC LIMIT 12");
+
+  $out = "";
+  while ($row = mysqli_fetch_assoc($catg_query)) {
+    if (strlen($row['post_title']) > 30) {
+      $comm_title = substr($row['post_title'], 0, 30) . "...";
+    } else {
+      $comm_title = $row['post_title'];
+    }
+
+    if (strlen($row['text']) > 35) {
+      $comm_text = substr($row['text'], 0, 35) . "...";
+    } else {
+      $comm_text = $row['text'];
+    }
+
+    $out .= '
+    <li>
+      <i class="fas fa-user"></i>
+      <span class="name">' . $row['name'] . '</span> on
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '">' . $comm_title . '</a>
+      <p>' . $comm_text . '</p>
+    </li>
+    ';
+  }
+  echo $out;
+}
+
+function postExists($p_id)
+{
+  global $connection;
+  if ($stmt = $connection->prepare('SELECT posts.id FROM posts WHERE id = ?')) {
+    $stmt->bind_param('s', $p_id);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+      return true;
+    } else {
+      return false;
+    }
+    $stmt->close();
+  }
+}
+
+function getarticleinfo($id, $col)
+{
+  global $connection;
+  $stmt = $connection->prepare('SELECT ' . $col . ' FROM posts INNER JOIN categories ON posts.post_categoryID=categories.cat_id INNER JOIN users ON posts.post_author=users.userkey WHERE posts.id = ?');
+  $stmt->bind_param('s', $id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $output = $result->fetch_assoc()[$col];
+  return $output;
+}
+
+function getRelatedPosts($cat_id, $p_id)
+{
+  global $connection;
+  $query = mysqli_query($connection, "SELECT id AS post_id,post_title FROM posts WHERE post_categoryID = " . $cat_id . " AND id != " . $p_id . " ORDER BY RAND() LIMIT 0,10");
+
+  $out = "";
+  while ($row = mysqli_fetch_assoc($query)) {
+    $out .= '
+    <li>
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '">' . $row['post_title'] . '</a>
+    </li>
+    ';
+  }
+  echo $out;
 }
 
 

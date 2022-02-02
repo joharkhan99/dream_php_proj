@@ -1,9 +1,7 @@
 <!-- head -->
 <?php include "sections/header.php" ?>
 <!-- head -->
-<!-- db -->
 <?php include "ajax/functions.php" ?>
-<!-- ./db -->
 
 <main>
 
@@ -19,26 +17,18 @@
         <?php
         $author_id = "";
         $author_name = "";
-        if (!isset($_GET['k']) || empty($_GET['k'])) {
-          $author_id = "2fa9b";
+        if (!isset($_GET['i']) || empty($_GET['i'])) {
+          $author_id = "";
         } else {
-          $author_id = sanitize($_GET['k']);
+          $author_id = sanitize($_GET['i']);
         }
         if (!isset($_GET['author']) || empty($_GET['author'])) {
-          $author_name = "ammar";
+          $author_name = "";
         } else {
-          $author_name = explode("-", sanitize($_GET['author']))[0];
+          $author_name = str_replace("-", " ", sanitize($_GET['author']));
         }
 
-
-        function getTagValue($string, $tag)
-        {
-          $pattern = "/<{$tag}>(.*?)<\/{$tag}>/s";
-          preg_match($pattern, $string, $matches);
-          return isset($matches[1]) ? $matches[1] : '';
-        }
-
-        $query = mysqli_query($connection, "SELECT profile_pic,name,user_description FROM posts INNER JOIN users ON users.userkey=posts.post_author WHERE SUBSTRING(users.userkey,1,5) LIKE '%$author_id%' AND users.name LIKE '%$author_name%'");
+        $query = mysqli_query($connection, "SELECT profile_pic,name,user_description FROM posts INNER JOIN users ON users.userkey=posts.post_author WHERE SUBSTRING(users.userkey,1,7) LIKE '%$author_id%' AND users.name LIKE '%$author_name%'");
 
         if (mysqli_num_rows($query) > 0) {
 
@@ -65,45 +55,7 @@
             <h2>The Latest from <?php echo ucwords($row['name']) ?></h2>
 
             <div class="row posts">
-
-              <?php
-
-              $query = mysqli_query($connection, "SELECT * FROM posts INNER JOIN categories ON categories.cat_id=posts.post_categoryID INNER JOIN users ON users.userkey=posts.post_author WHERE SUBSTRING(users.userkey,1,5) LIKE '%$author_id%' AND users.name LIKE '%$author_name%' ORDER BY post_date DESC");
-
-              while ($posts = mysqli_fetch_assoc($query)) {
-                $url = strtolower(str_replace(" ", "-", $posts['post_title']));
-                $auth_cat_url = strtolower(str_replace(" ", "-", $posts['cat_name']));
-              ?>
-
-                <div class="col-md-4">
-                  <div class="image">
-                    <a href="blog.php?i=<?php echo $posts['id'] ?>&post=<?php echo $url ?>">
-                      <img src="<?php echo explode("../", $posts['post_feature_image'])[1] ?>" alt="">
-                    </a>
-                  </div>
-                  <div class="content">
-                    <div class="category">
-                      <a href="categories.php?category=<?php echo $auth_cat_url ?>"><?php echo $posts['cat_name'] ?></a>
-                    </div>
-                    <a href="blog.php?i=<?php echo $posts['id'] ?>&post=<?php echo $url ?>" class="title">
-                      <?php echo $posts['post_title'] ?>
-                    </a>
-                    <p>
-                      <?php
-                      $p = getTagValue($posts['post_content'], "p");
-
-                      if (strlen($p) > 130) {
-                        echo substr(trim(html_entity_decode($p)), 0, 130) . "...";
-                      } else {
-                        echo trim(html_entity_decode($p));
-                      }
-                      ?>
-                    </p>
-                    <span class="date"><?php echo date("F jS, Y", strtotime($posts['post_date'])) ?></span>
-                  </div>
-                </div>
-
-              <?php } ?>
+              <?php getUserArticles($author_id, $author_name); ?>
 
             </div>
 
