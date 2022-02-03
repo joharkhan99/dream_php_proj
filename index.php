@@ -11,14 +11,32 @@
     <div class="row pb-4 left_blog">
       <!-- top blog -->
       <div class="col-md-6 mb-4">
-        <div class="row top-blog-img">
-          <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12 top-blog-img">
             <a href="article.php?i=<?php echo getTopBlog()[0]['post_id'] ?>&article=<?php echo slugify(getTopBlog()[0]['post_title']); ?>">
-              <img src="feature/<?php echo getTopBlog()[0]['post_feature_image'] ?>" class="img-fluid w-100" alt="<?php echo getTopBlog()[0]['post_title']; ?>">
+              <img src="feature/<?php echo getTopBlog()[0]['post_feature_image'] ?>" class="h-100 img-fluid w-100" alt="<?php echo getTopBlog()[0]['post_title']; ?>">
             </a>
           </div>
+          <div class="col-md-12">
+            <div class="category">
+              <a href="categories.php?category=<?php echo categoryURL(getTopBlog()[0]['cat_name']) ?>"><?php echo getTopBlog()[0]['cat_name'] ?></a>
+            </div>
+            <a href="article.php?i=<?php echo getTopBlog()[0]['post_id'] ?>&article=<?php echo slugify(getTopBlog()[0]['post_title']); ?>" class="blog-link">
+              <div class="title">
+                <h1><?php echo getTopBlog()[0]['post_title'] ?></h1>
+              </div>
+            </a>
+            <div class="author">
+              <a href="author.php?author=<?php echo slugify(getTopBlog()[0]['name']); ?>&i=<?php echo substr(getTopBlog()[0]['userkey'], 0, 7) ?>"><?php getTopBlog()[0]['name'] ?>By <?php echo getTopBlog()[0]['name'] ?></a>
+            </div>
+          </div>
         </div>
-        <div class="row top-blog-content">
+        <div class="row mt-5">
+          <div class="col-md-12 top-blog-img">
+            <a href="article.php?i=<?php echo getTopBlog()[0]['post_id'] ?>&article=<?php echo slugify(getTopBlog()[0]['post_title']); ?>">
+              <img src="feature/<?php echo getTopBlog()[0]['post_feature_image'] ?>" class="h-100 img-fluid w-100" alt="<?php echo getTopBlog()[0]['post_title']; ?>">
+            </a>
+          </div>
           <div class="col-md-12">
             <div class="category">
               <a href="categories.php?category=<?php echo categoryURL(getTopBlog()[0]['cat_name']) ?>"><?php echo getTopBlog()[0]['cat_name'] ?></a>

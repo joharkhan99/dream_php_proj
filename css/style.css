@@ -68,7 +68,7 @@ img {
   font-size: 1.375rem;
   line-height: 1.4;
   font-weight: 100;
-  padding-top: 30px;
+  padding-top: 60px;
 }
 
 .real-menu ul li {
@@ -77,14 +77,14 @@ img {
   float: none;
   display: block;
   width: auto;
-  padding: 1px 10px;
+  padding: 1px 20px;
   border-radius: 20px;
   transition: .3s;
-  padding-bottom: 3px;
+  margin-bottom: 10px;
 }
 
 .real-menu ul li a {
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 100;
   color: rgb(0, 0, 0);
   text-decoration: none;
@@ -93,12 +93,28 @@ img {
   transition: .3s;
 }
 
-.real-menu ul li:hover {
-  background: #f7f7f773;
+.real-menu ul li:hover,
+.real-menu ul li.menu-btn {
+  background: var(--main-color);
+  color: white;
+  padding: 1px 24px;
+}
+
+.real-menu ul li.menu-btn a {
+  font-size: 14px;
+  color: white;
+}
+
+.real-menu ul li.menu-btn-2 {
+  background: #00000033;
+}
+
+.real-menu ul li.menu-btn-2 a {
+  color: black !important;
 }
 
 .real-menu ul li:hover a {
-  color: var(--main-dark-color);
+  color: white;
 }
 
 .real-menu ul button {
@@ -137,7 +153,7 @@ img {
   top: 0;
   left: -300px;
   z-index: 4;
-  width: 272px;
+  width: 200px;
   height: 100%;
   padding: .5rem 1rem;
   box-shadow: 0 6px 12px rgba(107, 82, 82, 0.1);
@@ -154,6 +170,12 @@ body.open-mob-menu #body-overlay {
 
 body.open-mob-menu .real-menu {
   left: 0;
+  overflow-y: scroll;
+}
+
+body.open-mob-menu .real-menu::-webkit-scrollbar {
+  width: 5px;
+  /* width of the entire scrollbar */
 }
 
 #open-mob-menu {
@@ -202,12 +224,19 @@ header {
 }
 
 /* top blog */
+.top-blog-img {
+  height: 200px;
+}
 
-.top-blog-img img, .blog_img img {
+.top-blog-img img {
+  object-fit: cover;
+}
+
+img {
   transition: opacity .3s;
 }
 
-.top-blog-img img:hover, .blog_img img:hover {
+img:hover {
   opacity: 0.85;
 }
 
@@ -1406,13 +1435,9 @@ footer .cp span a {
 
 .categories .cat_card .col-md-4 .content .date, .author_info .posts .col-md-4 .content .date, .posts .col-md-4 .date {
   border-left: 1px solid rgb(155, 155, 155);
-  color: var(--author-color);
+  color: rgb(118 118 118);
   padding-left: 5px;
   font-size: 14px;
-}
-
-.author_info .posts .date {
-  border-left: none !important;
 }
 
 .posts .col-md-4 ._a, .posts .col-md-4 .date {

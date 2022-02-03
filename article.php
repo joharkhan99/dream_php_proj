@@ -25,7 +25,7 @@
         <?php getarticleinfo($p_id, 'cat_name') ?>
         <div class="blog_category">
           <a href="categories.php?category=<?php echo categoryURL(getarticleinfo($p_id, 'cat_name')) ?>">
-            <div><?php echo categoryURL(getarticleinfo($p_id, 'cat_name')) ?></div>
+            <div><?php echo categoryURLUnslug(getarticleinfo($p_id, 'cat_name')) ?></div>
           </a>
         </div>
 
