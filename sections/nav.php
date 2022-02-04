@@ -29,7 +29,7 @@
             <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
               <img src="users/<?php echo getuserinfo($_COOKIE["_uacct_"], 'profile_pic') ?>" alt="" class="shadow-sm">
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <ul class="dropdown-menu shadow border-0" aria-labelledby="dropdownMenuButton1">
               <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
               <li><a class="dropdown-item" href="logout.php">Log out</a></li>
             </ul>
@@ -83,7 +83,7 @@
         <li><a href="#">all blogs</a></li>
         <li><a href="#">categories</a></li>
         <li><a href="#">contact</a></li>
-        <li class="menu-btn menu-btn-2 shadow text-center mt-5"><a href="signup.php">Sign In</a></li>
+        <li class="menu-btn menu-btn-2 shadow text-center mt-5"><a href="login.php">Sign In</a></li>
         <li class="menu-btn shadow text-center"><a href="signup.php">Create account</a></li>
       </ul>
     </nav>

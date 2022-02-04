@@ -204,37 +204,7 @@
             <div class="comments bg-white px-3 py-3 rounded shadow-sm">
               <h5 class="border-bottom py-2 mb-4">Recent comments on your articles</h5>
 
-              <div class="comment-box bg-light rounded">
-                <span class="commenter-pic">
-                  <img src="../profiles/default.png" class="img-fluid">
-                </span>
-                <span class="commenter-name">
-                  <span class="username">None</span> <span class="comment-time">5 months ago</span>
-                </span>
-                <p class="comment-txt more mb-0 pb-3">nice</p>
-              </div>
-
-              <div class="comment-box bg-light rounded">
-                <span class="commenter-pic">
-                  <img src="../profiles/default.png" class="img-fluid">
-                </span>
-                <span class="commenter-name">
-                  <span class="username">None</span> <span class="comment-time">5 months ago</span>
-                </span>
-                <p class="comment-txt more border-bottom mb-0 pb-3">my nMW IS RENEWD</p>
-                <div class="comment-box replied rounded bg-white">
-                  <span class="commenter-name">
-                    <span>None</span> <span class="comment-time">5 months ago</span>
-                  </span>
-                  <p class="comment-txt more">literally brother</p>
-                </div>
-                <div class="comment-box replied rounded bg-white">
-                  <span class="commenter-name">
-                    <span>None</span> <span class="comment-time">5 months ago</span>
-                  </span>
-                  <p class="comment-txt more">literally brother</p>
-                </div>
-              </div>
+              <?php getDashboardComments($_COOKIE['_uacct_']) ?>
 
             </div>
           </div>

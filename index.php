@@ -4,7 +4,6 @@
 <?php include "ajax/functions.php" ?>
 
 <main>
-
   <?php include "sections/nav.php" ?>
   <!-- top content -->
   <div class="container-lg top-blogs-sect">
@@ -33,21 +32,21 @@
         </div>
         <div class="row mt-5">
           <div class="col-md-12 top-blog-img">
-            <a href="article.php?i=<?php echo getTopBlog()[0]['post_id'] ?>&article=<?php echo slugify(getTopBlog()[0]['post_title']); ?>">
-              <img src="feature/<?php echo getTopBlog()[0]['post_feature_image'] ?>" class="h-100 img-fluid w-100" alt="<?php echo getTopBlog()[0]['post_title']; ?>">
+            <a href="article.php?i=<?php echo getTopBlog()[1]['post_id'] ?>&article=<?php echo slugify(getTopBlog()[1]['post_title']); ?>">
+              <img src="feature/<?php echo getTopBlog()[1]['post_feature_image'] ?>" class="h-100 img-fluid w-100" alt="<?php echo getTopBlog()[1]['post_title']; ?>">
             </a>
           </div>
           <div class="col-md-12">
             <div class="category">
-              <a href="categories.php?category=<?php echo categoryURL(getTopBlog()[0]['cat_name']) ?>"><?php echo getTopBlog()[0]['cat_name'] ?></a>
+              <a href="categories.php?category=<?php echo categoryURL(getTopBlog()[1]['cat_name']) ?>"><?php echo getTopBlog()[1]['cat_name'] ?></a>
             </div>
-            <a href="article.php?i=<?php echo getTopBlog()[0]['post_id'] ?>&article=<?php echo slugify(getTopBlog()[0]['post_title']); ?>" class="blog-link">
+            <a href="article.php?i=<?php echo getTopBlog()[1]['post_id'] ?>&article=<?php echo slugify(getTopBlog()[1]['post_title']); ?>" class="blog-link">
               <div class="title">
-                <h1><?php echo getTopBlog()[0]['post_title'] ?></h1>
+                <h1><?php echo getTopBlog()[1]['post_title'] ?></h1>
               </div>
             </a>
             <div class="author">
-              <a href="author.php?author=<?php echo slugify(getTopBlog()[0]['name']); ?>&i=<?php echo substr(getTopBlog()[0]['userkey'], 0, 7) ?>"><?php getTopBlog()[0]['name'] ?>By <?php echo getTopBlog()[0]['name'] ?></a>
+              <a href="author.php?author=<?php echo slugify(getTopBlog()[1]['name']); ?>&i=<?php echo substr(getTopBlog()[1]['userkey'], 0, 7) ?>"><?php getTopBlog()[1]['name'] ?>By <?php echo getTopBlog()[1]['name'] ?></a>
             </div>
           </div>
         </div>
@@ -57,7 +56,7 @@
       <!-- side-blogs -->
       <div class="col-md-6 px-4 four_grids_blog">
         <div class="row row-cols-2">
-          <?php for ($i = 1; $i <= 2; $i++) : ?>
+          <?php for ($i = 2; $i <= 3; $i++) : ?>
             <div class="col">
               <div class="blog_card">
                 <div class="blog_img">
@@ -82,7 +81,7 @@
         </div>
 
         <div class="row row-cols-2">
-          <?php for ($i = 3; $i <= 4; $i++) : ?>
+          <?php for ($i = 4; $i <= 5; $i++) : ?>
             <div class="col">
               <div class="blog_card">
                 <div class="blog_img">
@@ -112,7 +111,7 @@
 
     <div class="row pt-4 sect-2-blogs px-2">
 
-      <?php for ($i = 5; $i <= 12; $i++) : ?>
+      <?php for ($i = 6; $i <= 13; $i++) : ?>
         <div class="col-sm-3 col-md-3">
           <div class="blog_card">
             <div class="blog_img">
@@ -138,7 +137,7 @@
     </div>
 
     <div class="row mt-5 mb-5">
-      <a href="posts.php" class="view_more">View More</a>
+      <a href="explore.php" class="view_more">View More</a>
     </div>
   </div>
 

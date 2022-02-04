@@ -113,12 +113,12 @@ function getusertotalcomments($id)
 {
   global $connection;
   $post_status = 'publish';
-  $stmt = $connection->prepare('SELECT SUM(post_comment_count) as total FROM posts WHERE post_status = ? AND post_author=?');
+  $stmt = $connection->prepare('SELECT COUNT(*) as total FROM comments INNER JOIN posts ON comments.post_id=posts.id INNER JOIN users ON users.userkey=posts.post_author WHERE post_status = ? AND post_author=?');
   $stmt->bind_param('ss', $post_status, $id);
   $stmt->execute();
   $result = $stmt->get_result();
   $output = $result->fetch_assoc()['total'];
-  echo empty($output) ? 0 : $output;
+  echo $output;
 }
 
 function MakeUserRole($userkey)
@@ -366,7 +366,7 @@ function getPublishArticles()
   global $connection;
   $output = "";
   $post_author = $_COOKIE['_uacct_'];
-  $stmt = $connection->prepare('SELECT * FROM posts INNER JOIN categories ON posts.post_categoryID=cat_id WHERE post_status="publish" AND post_author=?');
+  $stmt = $connection->prepare('SELECT * FROM posts INNER JOIN categories ON posts.post_categoryID=cat_id WHERE post_status="publish" AND post_author=? ORDER BY post_date DESC');
   $stmt->bind_param('s', $post_author);
   $stmt->execute();
   $result = $stmt->get_result();
@@ -384,7 +384,7 @@ function getPublishArticles()
       <td>' . $row['post_tags'] . '</td>
       <td>' . $row['post_views'] . '</td>
       <td>' . $row['post_comment_count'] . '</td>
-      <td><a href="javascript:void(0)" class="btn text-xs btn-primary">View</a></td>
+      <td><a href="../article.php?i=' . $row['id'] . '&article=' . slugify($row['post_title']) . '" target="_blank" class="btn text-xs btn-primary">View</a></td>
     </tr>
     ';
   }
@@ -630,8 +630,7 @@ class GetSavedUserReplyInfo
 function getTopBlog()
 {
   global $connection;
-  $query = mysqli_query($connection, "SELECT posts.id as post_id,post_feature_image,post_title,cat_name,name,userkey FROM posts INNER JOIN categories ON categories.cat_id=posts.post_categoryID INNER JOIN users ON users.userkey=posts.post_author WHERE post_status='publish' ORDER BY posts.post_date DESC LIMIT 14");
-  $res = mysqli_fetch_assoc($query);
+  $query = mysqli_query($connection, "SELECT posts.id as post_id,post_feature_image,post_title,cat_name,name,userkey FROM posts INNER JOIN categories ON posts.post_categoryID=categories.cat_id INNER JOIN users ON posts.post_author=users.userkey WHERE post_status='publish' ORDER BY post_date DESC LIMIT 15");
   $rows = array();
   while ($res = mysqli_fetch_assoc($query)) {
     $rows[] = $res;
@@ -927,5 +926,26 @@ function getRelatedPosts($cat_id, $p_id)
   echo $out;
 }
 
+function getDashboardComments($author)
+{
+  global $connection;
+
+  $comment_query = mysqli_query($connection, "SELECT * FROM comments INNER JOIN users ON users.userkey=comments.author INNER JOIN posts ON comments.post_id=posts.id WHERE posts.post_author='$author' ORDER BY comment_date DESC LIMIT 5");
+  $out = '';
+  while ($row = mysqli_fetch_assoc($comment_query)) {
+    $out .= '
+    <div class="comment-box bg-light rounded">
+      <span class="commenter-pic">
+        <img src="../users/' . $row['profile_pic'] . '" class="img-fluid" alt="' . $row['name'] . '">
+      </span>
+      <span class="commenter-name">
+        <span class="username">' . ucwords($row['name']) . '</span> <span class="comment-time">' . timeAgo($row['comment_date']) . '</span>
+      </span>
+      <p class="comment-txt more mb-0 pb-3">' . $row['text'] . '</p>
+    </div>
+    ';
+  }
+  echo $out;
+}
 
 ?>

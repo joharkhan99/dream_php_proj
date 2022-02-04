@@ -39,7 +39,7 @@
                 <div class="col-md-12">
                   <div class="feature-image">
                     <figure>
-                      <img src="feature/<?php echo getarticleinfo($p_id, 'post_feature_image') ?>" alt="<?php echo getarticleinfo($p_id, 'post_title') ?>">
+                      <img src="feature/<?php echo getarticleinfo($p_id, 'post_feature_image') ?>" alt="<?php echo getarticleinfo($p_id, 'post_title') ?>" class="fullscreen">
                     </figure>
                   </div>
                 </div>
@@ -49,7 +49,7 @@
                 <div class="px-4 author-profile">
                   <div class="author-img">
                     <a href="author.php?author=<?php echo slugify(getarticleinfo($p_id, 'name')); ?>&i=<?php echo substr(getarticleinfo($p_id, 'userkey'), 0, 7); ?>">
-                      <img src="users/<?php echo getarticleinfo($p_id, 'profile_pic') ?>" class="w-100 h-100" alt="<?php echo getarticleinfo($p_id, 'post_title') ?>">
+                      <img src="users/<?php echo getarticleinfo($p_id, 'profile_pic') ?>" class="w-100 h-100" alt="<?php echo getarticleinfo($p_id, 'name') ?>">
                     </a>
                   </div>
                   <div class="author-bio d-inline-block">
