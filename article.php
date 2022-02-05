@@ -75,7 +75,7 @@
                   $tags = explode(",", getarticleinfo($p_id, 'post_tags'));
                   foreach ($tags as $tag) :
                   ?>
-                    <a href="javascript:void(0)" class="px-2 mb-1 py-1 mr-2">#<?php echo $tag ?></a>
+                    <a href="tag.php?tag=<?php echo categoryURL($tag) ?>" class="px-2 mb-1 py-1 mr-2">#<?php echo $tag ?></a>
                   <?php endforeach; ?>
                 </div>
               </div>
@@ -120,8 +120,6 @@
                   </div>
                 </div>
               </div>
-
-
 
             </div>
 

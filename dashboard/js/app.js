@@ -214,5 +214,33 @@ function U_P() {
       }
     }
   });
+};
 
+function C_P() {
+  var formData = new FormData();
+  formData.append('pass', $("#change_pass_form #pass").val());
+  formData.append('cnfm_pass', $("#change_pass_form #cnfm_pass").val());
+
+  $.ajax({
+    type: "post",
+    url: "../ajax/cp.php",
+    data: formData,
+    processData: false,
+    contentType: false,
+    beforeSend: function () {
+      $('form[id="change_pass_form"] button[type="submit"]').addClass("spinner");
+    },
+    success: function (response) {
+      if (response.includes('0_e_0')) {
+        showAlert(response.replace('0_e_0', ''));
+        $('form[id="change_pass_form"] button[type="submit"]').removeClass("spinner");
+      } else {
+        showAlert(response);
+        $('form[id="change_pass_form"] button[type="submit"]').removeClass("spinner");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      }
+    }
+  });
 };

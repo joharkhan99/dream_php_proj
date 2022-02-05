@@ -27,10 +27,6 @@
             <form method="post" id="update_profile_form" onsubmit="event.preventDefault();U_P()">
               <div class="row">
                 <div class="col-md-6 mb-2">
-                  <label class="mb-0">Profile Name</label>
-                  <input type="text" class="form-control custom_input" name="profile_name" id="profile_name" value="<?php echo getuserinfo($_COOKIE['_uacct_'], 'name') ?>">
-                </div>
-                <div class="col-md-6 mb-2">
                   <label class="mb-0">Profile Bio</label>
                   <textarea name="profile_bio" class="form-control custom_input" id="profile_bio" cols="30" rows="10"><?php echo getuserinfo($_COOKIE['_uacct_'], 'user_description') ?></textarea>
                 </div>
@@ -62,6 +58,10 @@
 
 
                   </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label class="mb-0">Profile Name</label>
+                  <input type="text" class="form-control custom_input" name="profile_name" id="profile_name" value="<?php echo getuserinfo($_COOKIE['_uacct_'], 'name') ?>">
                 </div>
               </div>
               <div class="row border-top mt-5">

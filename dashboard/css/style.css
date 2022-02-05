@@ -292,7 +292,8 @@ textarea.custom_input:focus {
 }
 
 button.form_btn,
-#update_profile_form button[type='submit'] {
+#update_profile_form button[type='submit'],
+#change_pass_form button[type='submit'] {
   height: 51px;
 }
 

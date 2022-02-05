@@ -217,6 +217,32 @@ function AddUser($name, $email, $password, $about, $image)
   }
 }
 
+function ChangePassword($pass, $cnfm_pass, $userkey)
+{
+  global $connection;
+
+  if (!IsEmptyString($pass) && !IsEmptyString($cnfm_pass) && !IsEmptyString($userkey)) {
+    if ($pass == $cnfm_pass) {
+
+      $hashedpassword = password_hash($pass, PASSWORD_DEFAULT, ['cost' => 12]);
+      $stmt = $connection->prepare("UPDATE users SET password=? WHERE userkey=?");
+      $stmt->bind_param("ss", $hashedpassword, $userkey);
+
+      if ($stmt->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+
+      $stmt->close();
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 function UpdateProfile($userkey, $name, $about, $image = "")
 {
   global $connection;
@@ -766,6 +792,35 @@ function getCategoryPosts($category)
   $out = '';
 
   $query = mysqli_query($connection, "SELECT posts.id AS post_id,post_feature_image,post_title,userkey,users.name,post_date FROM posts INNER JOIN categories ON categories.cat_id=posts.post_categoryID INNER JOIN users ON users.userkey=posts.post_author WHERE categories.cat_name LIKE '%$category%' AND posts.post_status='publish' ORDER BY post_date DESC");
+
+  while ($row = mysqli_fetch_assoc($query)) {
+    $out .= '
+    <div class="col-md-4">
+    <div class="image">
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '">
+        <img src="feature/' . $row['post_feature_image'] . '" alt="">
+      </a>
+    </div>
+    <div class="content">
+      <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '" class="title">' . $row['post_title'] . '</a>
+      <div>
+      <span class="_a">
+        <a href="author.php?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" class="author">By' . ucwords($row['name']) . '</a>
+      </span>
+      <span class="date">' . date("F jS, Y", strtotime($row['post_date'])) . '</span>
+      </div>
+    </div>
+    </div>';
+  }
+  echo $out;
+}
+
+function getTagsPosts($tag)
+{
+  global $connection;
+  $out = '';
+
+  $query = mysqli_query($connection, "SELECT posts.id AS post_id,post_feature_image,post_title,userkey,users.name,post_date FROM posts INNER JOIN categories ON categories.cat_id=posts.post_categoryID INNER JOIN users ON users.userkey=posts.post_author WHERE posts.post_tags LIKE '%$tag%' AND posts.post_status='publish' ORDER BY post_date DESC");
 
   while ($row = mysqli_fetch_assoc($query)) {
     $out .= '

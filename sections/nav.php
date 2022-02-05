@@ -87,7 +87,7 @@
     </nav>
     <button id="open-mob-menu" onclick="toggleMenu()">
       <span></span>
-      <span></span>
+      <span class="w-75"></span>
       <span></span>
     </button>
   </div>

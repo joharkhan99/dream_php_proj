@@ -45,7 +45,7 @@ checkIfLogin();
       <span>Profile</span></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="javascript:void(0)">
+    <a class="nav-link" href="settings.php">
       <i class="fas fa-cogs"></i>
       <span>Settings</span></a>
   </li>
