@@ -805,7 +805,7 @@ function getCategoryPosts($category)
       <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '" class="title">' . $row['post_title'] . '</a>
       <div>
       <span class="_a">
-        <a href="author.php?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" class="author">By' . ucwords($row['name']) . '</a>
+        <a href="author.php?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" class="author">By ' . ucwords($row['name']) . '</a>
       </span>
       <span class="date">' . date("F jS, Y", strtotime($row['post_date'])) . '</span>
       </div>
@@ -834,7 +834,7 @@ function getTagsPosts($tag)
       <a href="article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '" class="title">' . $row['post_title'] . '</a>
       <div>
       <span class="_a">
-        <a href="author.php?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" class="author">By' . ucwords($row['name']) . '</a>
+        <a href="author.php?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" class="author">By ' . ucwords($row['name']) . '</a>
       </span>
       <span class="date">' . date("F jS, Y", strtotime($row['post_date'])) . '</span>
       </div>
