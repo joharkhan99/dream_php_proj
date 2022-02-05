@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg" aria-label="Eighth navbar example">
     <div class="container-lg">
 
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="index.php">
         Blog
       </a>
 
@@ -30,7 +30,7 @@
               <img src="users/<?php echo getuserinfo($_COOKIE["_uacct_"], 'profile_pic') ?>" alt="" class="shadow-sm">
             </button>
             <ul class="dropdown-menu shadow border-0" aria-labelledby="dropdownMenuButton1">
-              <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
+              <li><a class="dropdown-item" href="dashboard">Dashboard</a></li>
               <li><a class="dropdown-item" href="logout.php">Log out</a></li>
             </ul>
             <style>
@@ -79,10 +79,8 @@
           <span></span>
           <span></span>
         </button>
-        <li><a href="#">home</a></li>
-        <li><a href="#">all blogs</a></li>
-        <li><a href="#">categories</a></li>
-        <li><a href="#">contact</a></li>
+        <li><a href="index.php">home</a></li>
+        <li><a href="explore.php">Explore</a></li>
         <li class="menu-btn menu-btn-2 shadow text-center mt-5"><a href="login.php">Sign In</a></li>
         <li class="menu-btn shadow text-center"><a href="signup.php">Create account</a></li>
       </ul>

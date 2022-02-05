@@ -236,7 +236,8 @@ input.custom_input::-ms-input-placeholder {
   color: #b9b9b9;
 }
 
-input.custom_input:focus {
+input.custom_input:focus,
+textarea.custom_input:focus {
   box-shadow: none;
   border-color: #4e73df;
 }
@@ -290,7 +291,8 @@ input.custom_input:focus {
   border-right-color: #333;
 }
 
-button.form_btn {
+button.form_btn,
+#update_profile_form button[type='submit'] {
   height: 51px;
 }
 

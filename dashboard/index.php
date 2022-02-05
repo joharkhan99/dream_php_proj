@@ -160,7 +160,7 @@
 
               <div class="col-md-6 mb-2">
                 <div class="card gradient-4 custom-shadow1 h-100 py-2">
-                  <a href="javascript:void(0)" class="d-block text-decoration-none text-white">
+                  <a href="comments.php" class="d-block text-decoration-none text-white">
                     <div class="card-body">
                       <div class="row no-gutters align-items-center">
                         <div class="col mr-2">

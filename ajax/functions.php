@@ -86,6 +86,17 @@ function getuserinfo($id, $col)
   echo $output;
 }
 
+function returnuserinfo($id, $col)
+{
+  global $connection;
+  $stmt = $connection->prepare('SELECT ' . $col . ' FROM users WHERE userkey = ?');
+  $stmt->bind_param('s', $id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $output = $result->fetch_assoc()[$col];
+  return $output;
+}
+
 function getusertotalposts($id, $post_status = 'publish')
 {
   global $connection;
@@ -203,6 +214,33 @@ function AddUser($name, $email, $password, $about, $image)
     }
   } else {
     return false;
+  }
+}
+
+function UpdateProfile($userkey, $name, $about, $image = "")
+{
+  global $connection;
+
+  if (!IsEmptyString($name) && !IsEmptyString($about) && !IsEmptyString($userkey)) {
+
+    $name = str_replace("-", " ", sanitize($name));
+    $about = sanitize($about);
+
+    if (!IsEmptyString($image) && $image != "") {
+      $image = sanitize($image);
+      $stmt = $connection->prepare("UPDATE users SET name=?, profile_pic=?,user_description=? WHERE userkey=?");
+      $stmt->bind_param("ssss", $name, $image, $about, $userkey);
+    } else {
+      $stmt = $connection->prepare("UPDATE users SET name=?, user_description=? WHERE userkey=?");
+      $stmt->bind_param("sss", $name, $about, $userkey);
+    }
+    if ($stmt->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+
+    $stmt->close();
   }
 }
 
@@ -784,7 +822,7 @@ function getRecommendedPosts()
 {
   global $connection;
   $output = "";
-  $stmt = $connection->prepare('SELECT posts.id AS post_id,post_title,post_feature_image,cat_name,post_date FROM posts INNER JOIN categories ON posts.post_categoryID=cat_id WHERE post_status="publish" ORDER BY post_views DESC LIMIT 3');
+  $stmt = $connection->prepare('SELECT posts.id AS post_id,post_title,post_feature_image,cat_name,post_date FROM posts INNER JOIN categories ON posts.post_categoryID=cat_id WHERE post_status="publish" ORDER BY post_views DESC LIMIT 5');
   $stmt->execute();
   $result = $stmt->get_result();
   while ($row = $result->fetch_assoc()) {
@@ -819,7 +857,7 @@ function getRecommendedPosts()
 function getSidebarCategories()
 {
   global $connection;
-  $catg_query = mysqli_query($connection, "SELECT cat_name,COUNT(*) AS total FROM posts INNER JOIN categories ON posts.post_categoryID=categories.cat_id GROUP BY posts.post_categoryID ORDER BY total DESC");
+  $catg_query = mysqli_query($connection, "SELECT cat_name,COUNT(*) AS total FROM categories INNER JOIN posts ON categories.cat_id=posts.post_categoryID WHERE posts.post_status='publish' GROUP BY posts.post_categoryID ORDER BY total DESC");
 
   $out = "";
   while ($row = mysqli_fetch_assoc($catg_query)) {
@@ -941,11 +979,102 @@ function getDashboardComments($author)
       <span class="commenter-name">
         <span class="username">' . ucwords($row['name']) . '</span> <span class="comment-time">' . timeAgo($row['comment_date']) . '</span>
       </span>
-      <p class="comment-txt more mb-0 pb-3">' . $row['text'] . '</p>
+      <p class="comment-txt more mb-0 pb-2">' . $row['text'] . '</p>
+      <div class="py-2 px-2 border-rounded" style="background: #e7e8ed;
+      font-size: 13px;"><a href="../article.php?i=' . $row['post_id'] . '&article=' . slugify($row['post_title']) . '#comm" target="_blank">' . $row['post_title'] . '</a></div>
     </div>
     ';
   }
   echo $out;
+}
+
+function getCommentsBySpecificUser($user)
+{
+  global $connection;
+  $output = '';
+  $user = sanitize($user);
+  $comment_query = mysqli_query($connection, "SELECT * FROM comments INNER JOIN users ON users.userkey=comments.author INNER JOIN posts ON comments.post_id=posts.id WHERE userkey='$user' ORDER BY comment_date DESC");
+
+  if (mysqli_num_rows($comment_query) > 0) {
+    while ($comments = mysqli_fetch_assoc($comment_query)) {
+      $output .= '
+    <div class="comment-box border-bottom bg-light border-rounded">
+      <div class="py-2 px-2 border-rounded" style="background: #e7e8ed;
+        font-size: 13px;"><a href="../article.php?i=' . $comments['post_id'] . '&article=' . slugify($comments['post_title']) . '#comm" target="_blank">' . $comments['post_title'] . '</a></div>
+      <span class="commenter-pic">
+        <img src="../users/' . $comments['profile_pic'] . '" class="img-fluid" alt="' . $comments['name'] . '">
+      </span>
+      <span class="commenter-name">
+        <span class="username">' . ucwords($comments['name']) . '</span> <span class="comment-time">' . timeAgo($comments['comment_date']) . '</span>
+      </span>
+      <p class="comment-txt more">' . $comments['text'] . '</p>';
+
+      $reply_query = mysqli_query($connection, "SELECT name,text,reply_date FROM comment_replies INNER JOIN users ON users.userkey=comment_replies.author_id WHERE comment_id=" . $comments['comment_id']);
+      while ($replies = mysqli_fetch_assoc($reply_query)) {
+        $output .= '
+        <div class="comment-box replied mt-0 py-0 bg-white">
+          <span class="commenter-name">
+            <span class="text-xs">' . ucwords($replies['name']) . '</span> <span class="comment-time text-xs">' . timeAgo($replies['reply_date']) . '</span>
+          </span>
+          <p class="comment-txt more text-xs">' . $replies['text'] . '</p>
+        </div>
+      ';
+      }
+      $output .= "</div>";
+    }
+
+    echo $output;
+  } else {
+    echo "<h6 style='text-align: center;
+      margin-top: 60px;
+      margin-bottom: 70px;
+      font-weight: 800;
+      color: #8694a9;'>No Comments Yet</h6>";
+  }
+}
+
+function getCommentsForSpecificUserPosts($user)
+{
+  global $connection;
+  $output = '';
+  $comment_query = mysqli_query($connection, "SELECT * FROM comments INNER JOIN users ON users.userkey=comments.author INNER JOIN posts ON comments.post_id=posts.id WHERE posts.post_author='$user' ORDER BY comment_date DESC");
+
+  if (mysqli_num_rows($comment_query) > 0) {
+    while ($comments = mysqli_fetch_assoc($comment_query)) {
+      $output .= '
+    <div class="comment-box border-bottom bg-light border-rounded">
+      <div class="py-2 px-2 border-rounded" style="background: #e7e8ed;
+        font-size: 13px;"><a href="../article.php?i=' . $comments['post_id'] . '&article=' . slugify($comments['post_title']) . '#comm" target="_blank">' . $comments['post_title'] . '</a></div>
+      <span class="commenter-pic">
+        <img src="../users/' . $comments['profile_pic'] . '" class="img-fluid" alt="' . $comments['name'] . '">
+      </span>
+      <span class="commenter-name">
+        <span class="username">' . ucwords($comments['name']) . '</span> <span class="comment-time">' . timeAgo($comments['comment_date']) . '</span>
+      </span>
+      <p class="comment-txt more">' . $comments['text'] . '</p>';
+
+      $reply_query = mysqli_query($connection, "SELECT name,text,reply_date FROM comment_replies INNER JOIN users ON users.userkey=comment_replies.author_id WHERE comment_id=" . $comments['comment_id']);
+      while ($replies = mysqli_fetch_assoc($reply_query)) {
+        $output .= '
+        <div class="comment-box replied mt-0 py-0 bg-white">
+          <span class="commenter-name">
+            <span class="text-xs">' . ucwords($replies['name']) . '</span> <span class="comment-time text-xs">' . timeAgo($replies['reply_date']) . '</span>
+          </span>
+          <p class="comment-txt more text-xs">' . $replies['text'] . '</p>
+        </div>
+      ';
+      }
+      $output .= "</div>";
+    }
+
+    echo $output;
+  } else {
+    echo "<h6 style='text-align: center;
+      margin-top: 60px;
+      margin-bottom: 70px;
+      font-weight: 800;
+      color: #8694a9;'>No Comments Yet</h6>";
+  }
 }
 
 ?>

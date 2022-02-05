@@ -653,8 +653,9 @@ footer .cp span a {
   font-weight: bold;
   font-size: 3rem;
   margin-right: 0.5rem;
-  font-family: 'Abril Fatface', serif;
+  font-family: cursive, 'Poppins', sans-serif;
   line-height: 1;
+  color: #262626;
 }
 
 .most_popular ol li .title {

@@ -34,18 +34,18 @@ checkIfLogin();
     </div>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="charts.html">
+    <a class="nav-link" href="comments.php">
       <i class="fas fa-comment-dots"></i>
       <span>Comments</span></a>
   </li>
   <hr class="sidebar-divider">
   <li class="nav-item">
-    <a class="nav-link" href="tables.html">
+    <a class="nav-link" href="profile.php">
       <i class="fas fa-user"></i>
       <span>Profile</span></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="tables.html">
+    <a class="nav-link" href="javascript:void(0)">
       <i class="fas fa-cogs"></i>
       <span>Settings</span></a>
   </li>

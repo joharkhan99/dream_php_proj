@@ -1,6 +1,6 @@
 <div class="col-md-3 recommended">
   <div class="head">
-    <h4>Recommended Blogs</h4>
+    <h4>Recommended Articles</h4>
   </div>
 
   <div class="row blogs">
@@ -10,7 +10,7 @@
 
   <div class=".col-md-3 categories">
     <div class="head">
-      <h4>Categories</h4>
+      <h4>🔥 Categories</h4>
     </div>
     <ul>
       <?php getSidebarCategories() ?>

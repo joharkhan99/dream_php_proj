@@ -185,3 +185,34 @@ $('#article-tags').on('click', 'button', function (e) {
   $(this).remove();
   return false;
 });
+
+function U_P() {
+  var formData = new FormData();
+  formData.append('profile_name', $("#profile_name").val());
+  formData.append('profile_bio', $("#profile_bio").val());
+  formData.append('profile_image', document.getElementById('updated_profile_pic').files[0]);
+
+  $.ajax({
+    type: "post",
+    url: "../ajax/up.php",
+    data: formData,
+    processData: false,
+    contentType: false,
+    beforeSend: function () {
+      $('form[id="update_profile_form"] button[type="submit"]').addClass("spinner");
+    },
+    success: function (response) {
+      if (response.includes('0_e_0')) {
+        showAlert(response.replace('0_e_0', ''));
+        $('form[id="update_profile_form"] button[type="submit"]').removeClass("spinner");
+      } else {
+        showAlert(response);
+        $('form[id="update_profile_form"] button[type="submit"]').removeClass("spinner");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      }
+    }
+  });
+
+};
