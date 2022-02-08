@@ -1132,4 +1132,164 @@ function getCommentsForSpecificUserPosts($user)
   }
 }
 
+function getIndexMeta()
+{
+  echo '
+    <title>Likhdy | Write your own thoughts and ideas and share with the world</title>
+    <meta name="title" content="Likhdy | Write your own thoughts and ideas and share with the world" />
+    <meta property="og:title" content="Likhdy | Write your own thoughts and ideas and share with the world" />
+    <meta name="description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta property="og:description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta name="keywords" content="Likhdy, free article writing, article information, free blogs, free posts, read articles,write freely, articles on any subject, professional writing community, likhdy articles, likhdy blogs, write on likhdy" />
+    <meta property="og:url" content="https://likhdy.com/" />
+    <meta property="al:web:url" content="https://likhdy.com/" />
+    <meta property="og:image" content="https://likhdy.com/img/likhdy-white-logo.PNG" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://likhdy.com/" />
+  ';
+}
+
+function getCategoryMeta($category)
+{
+  if (!IsEmptyString($category)) {
+    echo '
+    <title>The most thoughtful articles about ' . $category . ' | Likhdy</title>
+    <meta name="title" content="The most thoughtful articles about ' . $category . ' | Likhdy" />
+    <meta property="og:title" content="The most thoughtful articles about ' . $category . ' | Likhdy" />
+    <meta name="description" content="Read articles about ' . ucwords($category) . ' on Likhdy. Find savvy, extraordinary points of view on Self and the subjects that make the biggest difference to you." />
+    <meta property="og:description" content="Read articles about ' . ucwords($category) . ' on Likhdy. Find savvy, extraordinary points of view on Self and the subjects that make the biggest difference to you." />
+    <meta name="keywords" content="Likhdy,' . ucwords($category) . ', free articles on ' . ucwords($category) . ',info about ' . ucwords($category) . ',stories related to ' . ucwords($category) . ',read about ' . ucwords($category) . ',write about ' . ucwords($category) . '" />
+    <meta property="og:url" content="https://likhdy.com/categories?category=' . categoryURL($category) . '" />
+    <meta property="og:image" content="https://likhdy.com/img/likhdy-white-logo.PNG" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://likhdy.com/categories?category=' . categoryURL($category) . '" />
+    ';
+  }
+}
+
+function getTagMeta($tag)
+{
+  if (!IsEmptyString($tag)) {
+    echo '
+    <title>The most thoughtful articles about ' . $tag . ' | Likhdy</title>
+    <meta name="title" content="The most thoughtful articles about ' . $tag . ' | Likhdy" />
+    <meta property="og:title" content="The most thoughtful articles about ' . $tag . ' | Likhdy" />
+    <meta name="description" content="Read articles about ' . ucwords($tag) . ' on Likhdy. Find savvy, extraordinary points of view on Self and the subjects that make the biggest difference to you." />
+    <meta property="og:description" content="Read articles about ' . ucwords($tag) . ' on Likhdy. Find savvy, extraordinary points of view on Self and the subjects that make the biggest difference to you." />
+    <meta name="keywords" content="Likhdy,' . ucwords($tag) . ', free articles on ' . ucwords($tag) . ',info about ' . ucwords($tag) . ',stories related to ' . ucwords($tag) . ',read about ' . ucwords($tag) . ',write about ' . ucwords($tag) . '" />
+    <meta property="og:url" content="https://likhdy.com/tag?tag=' . categoryURL($tag) . '" />
+    <meta property="og:image" content="https://likhdy.com/img/likhdy-white-logo.PNG" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://likhdy.com/tag?tag=' . categoryURL($tag) . '" />
+    ';
+  }
+}
+
+function getAuthorMeta($authorname, $userkey)
+{
+  global $connection;
+  if (!IsEmptyString($authorname) && !IsEmptyString($userkey)) {
+
+    $query = mysqli_query($connection, "SELECT users.name,profile_pic FROM users WHERE SUBSTRING(users.userkey,1,7) LIKE '%$userkey%' AND users.name LIKE '%$authorname%'");
+    if (mysqli_num_rows($query) > 0) {
+      $row = mysqli_fetch_assoc($query);
+      echo '
+      <title>' . $row['name'] . ' | Likhdy</title>
+      <meta name="title" content="' . $row['name'] . ' | Likhdy" />
+      <meta property="og:title" content="' . $row['name'] . ' | Likhdy" />
+      <meta name="description" content="Read articles from ' . $row['name'] . ' on Likhdy. Contributor on Likhdy" />
+      <meta property="og:description" content="Read articles from ' . $row['name'] . ' on Likhdy. Contributor on Likhdy" />
+      <meta name="keywords" content="Likhdy, ' . $row['name'] . ', ' . $row['name'] . ' on likhdy, articles from ' . $row['name'] . ', writings from ' . $row['name'] . '" />
+      <meta property="og:url" content="https://likhdy.com/author?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" />
+      <meta property="og:image" content="https://likhdy.com/users/' . $row['profile_pic'] . '" />
+      <meta property="profile:username" content="' . $row['name'] . '" />
+      <meta property="og:locale" content="en_US" />
+      <meta property="og:type" content="profile" />
+      <link rel="canonical" href="https://likhdy.com/author?author=' . slugify(ucwords($row['name'])) . '&i=' . substr($row['userkey'], 0, 7) . '" />  
+      ';
+    }
+  }
+}
+
+function getLoginMeta()
+{
+  echo '
+    <title>Log in | Likhde</title>
+    <meta name="title" content="Log in | Likhde" />
+    <meta property="og:title" content="Log in | Likhde" />
+    <meta name="description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta property="og:description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta name="keywords" content="Likhdy,login,login likhde, free article writing, article information, free blogs, free posts, read articles,write freely, articles on any subject, professional writing community, likhdy articles, likhdy blogs, write on likhdy" />
+    <meta property="og:url" content="https://likhdy.com/login" />
+    <meta property="al:web:url" content="https://likhdy.com/login" />
+    <meta property="og:image" content="https://likhdy.com/img/likhdy-white-logo.PNG" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://likhdy.com/login" />
+  ';
+}
+
+function getSignUpMeta()
+{
+  echo '
+    <title>Sign up | Likhde</title>
+    <meta name="title" content="Sign up | Likhde" />
+    <meta property="og:title" content="Sign up | Likhde" />
+    <meta name="description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta property="og:description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta name="keywords" content="Likhdy,signup,signup likhde,register likhde,likhde registration free article writing, article information, free blogs, free posts, read articles,write freely, articles on any subject, professional writing community, likhdy articles, likhdy blogs, write on likhdy" />
+    <meta property="og:url" content="https://likhdy.com/signup" />
+    <meta property="al:web:url" content="https://likhdy.com/signup" />
+    <meta property="og:image" content="https://likhdy.com/img/likhdy-white-logo.PNG" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://likhdy.com/signup" />
+  ';
+}
+
+function getExploreMeta()
+{
+  echo '
+    <title>Explore | Read insightful and engaging articles on likhde</title>
+    <meta name="title" content="Explore | Read insightful and engaging articles on likhde" />
+    <meta property="og:title" content="Explore | Read insightful and engaging articles on likhde" />
+    <meta name="description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta property="og:description" content="Likhdy is an open platform wherein readers find dynamic wondering, and in which professional and undiscovered voices can proportion their writing on any subject or matter." />
+    <meta name="keywords" content="Likhdy,explore,explore likhde,register likhde,likhde registration free article writing, article information, free blogs, free posts, read articles,write freely, articles on any subject, professional writing community, likhdy articles, likhdy blogs, write on likhdy" />
+    <meta property="og:url" content="https://likhdy.com/explore" />
+    <meta property="al:web:url" content="https://likhdy.com/explore" />
+    <meta property="og:image" content="https://likhdy.com/img/likhdy-white-logo.PNG" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://likhdy.com/explore" />
+  ';
+}
+
+function getArticleMeta($p_id)
+{
+  if (!IsEmptyString($p_id))
+    echo '
+    <title>' . getarticleinfo($p_id, 'post_title') . ' | by ' . getarticleinfo($p_id, 'name') . ' | Likhdy</title>
+    <meta property="article:published_time" content="' . getarticleinfo($p_id, 'post_date') . '" />
+    <meta name="title" content="' . getarticleinfo($p_id, 'post_title') . ' | by ' . getarticleinfo($p_id, 'name') . ' | Likhdy" />
+    <meta property="og:title" content="' . getarticleinfo($p_id, 'post_title') . '" />
+    <meta name="description" content="Indeed, now is the ideal time. You\'ve joined Likhdy. You\'ve acclaimed, remarked, and featured. Presently, it is the ideal opportunity for you to..." />
+    <meta property="og:description" content="or this is how I started my journey..." />
+    <meta name="keywords" content="Likhdy,explore,explore likhde,register likhde,likhde registration free article writing, article information, free blogs, free posts, read articles,write freely, articles on any subject, professional writing community, likhdy articles, likhdy blogs, write on likhdy" />
+    <meta property="og:url" content="https://likhdy.com/article.php?i=' . getarticleinfo($p_id, 'post_id') . '&article=' . slugify(getarticleinfo($p_id, 'post_title')) . '" />
+    <meta property="al:web:url" content="https://likhdy.com/article.php?i=' . getarticleinfo($p_id, 'post_id') . '&article=' . slugify(getarticleinfo($p_id, 'post_title')) . '" />
+    <meta property="og:image" content="https://likhdy.com/feature/' . getarticleinfo($p_id, 'post_feature_image') . '" />
+    <meta property="article:author" content="https://likhdy.com/author.php?author=' . slugify(getarticleinfo($p_id, 'name')) . '&i=' . substr(getarticleinfo($p_id, 'userkey'), 0, 7) . '" />
+    <meta name="author" content="' . getarticleinfo($p_id, 'name') . '" />
+    <meta name="referrer" content="unsafe-url" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <link rel="author" href="https://likhdy.com/author.php?author=' . slugify(getarticleinfo($p_id, 'name')) . '&i=' . substr(getarticleinfo($p_id, 'userkey'), 0, 7) . '" />
+    <link rel="canonical" href="https://likhdy.com/article.php?i=' . getarticleinfo($p_id, 'post_id') . '&article=' . slugify(getarticleinfo($p_id, 'post_title')) . '" />
+  ';
+}
+
 ?>
