@@ -172,19 +172,40 @@ function U_B() {
 };
 
 // article tags
-$('#article-tags input').on('keyup', function (e) {
+document.querySelector('#article-tags input').addEventListener('keyup', function (e) {
   var key = e.which;
   if (key == 188) {
-    $('<button class="mb-1"/>').text($(this).val().slice(0, -1)).insertBefore($(this));
-    $(this).val('').focus();
+
+    let myElm = document.createElement("button");
+    myElm.innerText = document.querySelector('#article-tags input').value.slice(0, -1);
+    myElm.classList.add("mt-1");
+    myElm.type = "button";
+    let parentDiv = document.querySelector("#article-tags input").parentNode;
+
+    parentDiv.insertBefore(myElm, document.getElementById("#article-tags input"));
+    document.querySelector('#article-tags input').value = '';
+    document.querySelector('#article-tags input').focus();
   };
 });
-
 $('#article-tags').on('click', 'button', function (e) {
   e.preventDefault();
   $(this).remove();
   return false;
 });
+
+// $('#article-tags input').on('keyup', function (e) {
+//   var key = e.which;
+//   if (key == 188) {
+//     $('<button class="mb-1"/>').text($(this).val().slice(0, -1)).insertBefore($(this));
+//     $(this).val('').focus();
+//   };
+// });
+// document.querySelector('#article-tags button').addEventListener('click', function (e) {
+//   e.preventDefault();
+//   $(this).remove();
+//   return false;
+// });
+
 
 function U_P() {
   var formData = new FormData();

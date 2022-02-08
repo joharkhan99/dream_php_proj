@@ -4,7 +4,7 @@ checkIfLogin();
 ?>
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
-
+  <?php $pagename = basename($_SERVER['PHP_SELF']); ?>
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
     <div class="sidebar-brand-icon rotate-n-15">
@@ -14,13 +14,13 @@ checkIfLogin();
   </a>
 
   <hr class="sidebar-divider my-0">
-  <li class="nav-item active">
+  <li class="nav-item <?php echo ($pagename == 'index.php' ? 'active' : '') ?>">
     <a class="nav-link" href="index.php">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span></a>
   </li>
   <hr class="sidebar-divider">
-  <li class="nav-item">
+  <li class="nav-item <?php echo ($pagename == 'write-article.php' || $pagename == 'published' || $pagename == 'draft.php' ? 'active' : '') ?>">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-newspaper"></i>
       <span>Articles</span>
@@ -33,18 +33,18 @@ checkIfLogin();
       </div>
     </div>
   </li>
-  <li class="nav-item">
+  <li class="nav-item <?php echo ($pagename == 'comments.php' ? 'active' : '') ?>">
     <a class="nav-link" href="comments.php">
       <i class="fas fa-comment-dots"></i>
       <span>Comments</span></a>
   </li>
   <hr class="sidebar-divider">
-  <li class="nav-item">
+  <li class="nav-item <?php echo ($pagename == 'profile.php' ? 'active' : '') ?>">
     <a class="nav-link" href="profile.php">
       <i class="fas fa-user"></i>
       <span>Profile</span></a>
   </li>
-  <li class="nav-item">
+  <li class="nav-item <?php echo ($pagename == 'settings.php' ? 'active' : '') ?>">
     <a class="nav-link" href="settings.php">
       <i class="fas fa-cogs"></i>
       <span>Settings</span></a>
