@@ -2103,3 +2103,46 @@ footer .cp span a {
   background: var(--main-color);
   color: white;
 }
+.write-section {
+    margin-top: -60px;
+}
+
+.write-section .col-md-6 h1 {
+    letter-spacing: 4px;
+}
+
+.write-section .col-md-6 h2 {
+    font-size: 73px;
+}
+
+.write-section .col-md-6 img,
+.share_info .col-md-6 img {
+    background: none;
+    background-color: transparent;
+    animation: none;
+    object-fit: contain;
+}
+
+.write-section .col-md-6 a,
+.share_info .col-md-6 a {
+    border-radius: 30px;
+}
+
+.share_info {
+    background: pink;
+}
+
+.share_info h3 {
+    font-size: 50px;
+}
+
+.share_info h4 {
+    text-align: right;
+    font-size: 14px;
+}
+
+@media (max-width:500px) {
+    .write-section .col-md-6 h2 {
+        font-size: 50px;
+    }
+}
